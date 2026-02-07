@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { ExternalLink, Search, ShoppingCart } from "lucide-react";
+import { Search, ShoppingCart } from "lucide-react";
 import { ProductResult } from "@/hooks/useAnalyzeImage";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 
 interface PinCardProps {
   product: ProductResult;
@@ -11,22 +10,22 @@ interface PinCardProps {
 
 export function PinCard({ product, index }: PinCardProps) {
   const [imageError, setImageError] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
 
   // Use product image, with a simple fallback
   const imageUrl = !imageError && product.product_image
     ? product.product_image
     : "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80";
 
+  // FORCE new tab to avoid "Refused to connect" errors in iframe
+  const handleBuyNow = () => {
+    if (!product.product_url) return;
+    window.open(product.product_url, '_blank', 'noopener,noreferrer');
+  };
+
+  // Open Google Image Search for similar items
   const handleFindSimilar = () => {
-    setIsSearching(true);
-    
-    setTimeout(() => {
-      setIsSearching(false);
-      toast.success("Found 12 similar items", {
-        description: `Searching for more like "${product.product_title}"`,
-      });
-    }, 1500);
+    const query = encodeURIComponent(product.product_title + " interior design");
+    window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -82,30 +81,19 @@ export function PinCard({ product, index }: PinCardProps) {
             <Button
               variant="outline"
               onClick={handleFindSimilar}
-              disabled={isSearching}
               className="flex-1 h-11 gap-2 rounded-full border-border hover:bg-accent"
             >
-              {isSearching ? (
-                <span className="w-4 h-4 border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin" />
-              ) : (
-                <Search className="w-4 h-4" />
-              )}
+              <Search className="w-4 h-4" />
               <span className="text-sm font-medium">Find Similar</span>
             </Button>
 
-            {/* Buy Now - Primary Button */}
+            {/* Buy Now - Primary Button using window.open */}
             <Button
-              asChild
+              onClick={handleBuyNow}
               className="flex-1 h-11 gap-2 rounded-full bg-foreground text-background hover:bg-foreground/90"
             >
-              <a
-                href={product.product_url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <ShoppingCart className="w-4 h-4" />
-                <span className="text-sm font-medium">Buy Now</span>
-              </a>
+              <ShoppingCart className="w-4 h-4" />
+              <span className="text-sm font-medium">Buy Now</span>
             </Button>
           </div>
         </div>
