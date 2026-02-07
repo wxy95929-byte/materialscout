@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { ExternalLink, Heart } from "lucide-react";
+import { ExternalLink, Heart, ScanSearch } from "lucide-react";
 import { ProcurementItem } from "@/hooks/useAnalyzeRoom";
+import { toast } from "sonner";
 
 interface PinCardProps {
   item: ProcurementItem;
@@ -47,6 +48,24 @@ const getPlaceholderImage = (detectedItem: string): string => {
 export function PinCard({ item, index }: PinCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const handleVisualSearch = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsSearching(true);
+    
+    // Simulate visual search
+    setTimeout(() => {
+      setIsSearching(false);
+      toast.success("Found 12 similar materials", {
+        description: `Searching for more like "${item.materialSuggestion}"`,
+        action: {
+          label: "View",
+          onClick: () => console.log("View similar items"),
+        },
+      });
+    }, 1500);
+  };
 
   return (
     <div 
@@ -65,6 +84,20 @@ export function PinCard({ item, index }: PinCardProps) {
             alt={item.materialSuggestion}
             className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-75"
           />
+          
+          {/* Visual Search Button - Always visible bottom right */}
+          <button
+            onClick={handleVisualSearch}
+            disabled={isSearching}
+            className="absolute bottom-3 left-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center transition-all hover:scale-110 hover:bg-white shadow-lg z-10"
+            title="Find similar"
+          >
+            {isSearching ? (
+              <span className="w-4 h-4 border-2 border-foreground/30 border-t-foreground rounded-full animate-spin" />
+            ) : (
+              <ScanSearch className="w-4 h-4 text-foreground" />
+            )}
+          </button>
           
           {/* Hover Overlay */}
           <div className={`absolute inset-0 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
