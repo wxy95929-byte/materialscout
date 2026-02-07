@@ -46,9 +46,9 @@ serve(async (req) => {
       );
     }
 
-    // Initialize Google Generative AI
+    // Initialize Google Generative AI with gemini-2.0-flash (stable successor to 1.5-flash)
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     // Extract base64 data and mime type
     let base64Data: string;
