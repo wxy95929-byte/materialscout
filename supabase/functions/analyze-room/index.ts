@@ -29,11 +29,67 @@ serve(async (req) => {
   try {
     const { imageBase64, budget, style } = await req.json();
 
+    // Validate required fields
     if (!imageBase64 || !budget) {
       return new Response(
         JSON.stringify({ error: "Missing required fields: imageBase64, budget" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    // Validate image size (limit to ~5MB base64, which is ~7MB in base64 encoding)
+    if (typeof imageBase64 !== "string" || imageBase64.length > 7000000) {
+      return new Response(
+        JSON.stringify({ error: "Image too large. Maximum size is 5MB." }),
+        { status: 413, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate image format
+    const formatMatch = imageBase64.match(/^data:image\/(jpeg|jpg|png|webp|gif);base64,/);
+    if (!formatMatch) {
+      return new Response(
+        JSON.stringify({ error: "Invalid image format. Supported formats: JPEG, PNG, WebP, GIF." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate base64 encoding
+    const base64Data = imageBase64.split(",")[1];
+    if (!base64Data) {
+      return new Response(
+        JSON.stringify({ error: "Invalid base64 encoding." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    try {
+      atob(base64Data.slice(0, 100)); // Test decode first 100 chars
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "Invalid base64 encoding." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate budget parameter
+    const validBudgets = ["economy", "standard", "luxury"];
+    if (!validBudgets.includes(budget)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid budget. Must be economy, standard, or luxury." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate style parameter (if provided)
+    if (style) {
+      const validStyles = ["modern", "japandi", "farmhouse", "industrial"];
+      if (!validStyles.includes(style)) {
+        return new Response(
+          JSON.stringify({ error: "Invalid style preference." }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
     }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
