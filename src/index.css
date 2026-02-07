@@ -3,99 +3,101 @@
 @tailwind utilities;
 
 /* Material Scout Design System
-   Minimalist, clean, high-end renovation aesthetic
-   Primary: Emerald green | Neutrals: Slate scale
+   Warm Minimalist - Inspired by Architectural Digest & Kinfolk
+   Primary Colors: Cream (#F9F7F2), Charcoal (#2C2C2C), Taupe accents
 */
 
 @layer base {
   :root {
-    --background: 0 0% 99%;
-    --foreground: 215 25% 12%;
+    /* Warm Cream background */
+    --background: 40 33% 97%;
+    --foreground: 0 0% 17%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 12%;
+    --card: 40 33% 99%;
+    --card-foreground: 0 0% 17%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 12%;
+    --popover: 40 33% 99%;
+    --popover-foreground: 0 0% 17%;
 
-    /* Emerald green primary - sophisticated, growth-oriented */
-    --primary: 158 64% 32%;
-    --primary-foreground: 0 0% 100%;
+    /* Warm Taupe primary */
+    --primary: 30 15% 35%;
+    --primary-foreground: 40 33% 97%;
 
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 215 25% 25%;
+    --secondary: 35 20% 94%;
+    --secondary-foreground: 0 0% 25%;
 
-    --muted: 210 15% 95%;
-    --muted-foreground: 215 15% 50%;
+    --muted: 35 15% 92%;
+    --muted-foreground: 30 10% 45%;
 
-    --accent: 158 50% 94%;
-    --accent-foreground: 158 64% 25%;
+    --accent: 35 25% 90%;
+    --accent-foreground: 30 20% 30%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 60% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 20% 91%;
-    --input: 214 20% 91%;
-    --ring: 158 64% 32%;
+    --border: 35 20% 88%;
+    --input: 35 20% 88%;
+    --ring: 30 15% 35%;
 
-    --radius: 0.625rem;
+    --radius: 0.5rem;
 
     /* Custom tokens */
-    --surface-elevated: 0 0% 100%;
-    --surface-sunken: 210 20% 98%;
-    --success: 158 64% 42%;
-    --warning: 38 92% 50%;
+    --surface-elevated: 40 33% 99%;
+    --surface-sunken: 40 30% 96%;
+    --success: 145 40% 40%;
+    --warning: 38 80% 50%;
     
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 40 33% 97%;
+    --sidebar-foreground: 0 0% 25%;
+    --sidebar-primary: 0 0% 17%;
+    --sidebar-primary-foreground: 40 33% 97%;
+    --sidebar-accent: 35 20% 92%;
+    --sidebar-accent-foreground: 0 0% 17%;
+    --sidebar-border: 35 20% 88%;
+    --sidebar-ring: 30 15% 35%;
   }
 
   .dark {
-    --background: 220 20% 8%;
-    --foreground: 210 20% 96%;
+    /* Dark mode with warm undertones */
+    --background: 30 15% 10%;
+    --foreground: 40 20% 92%;
 
-    --card: 220 18% 11%;
-    --card-foreground: 210 20% 96%;
+    --card: 30 12% 14%;
+    --card-foreground: 40 20% 92%;
 
-    --popover: 220 18% 11%;
-    --popover-foreground: 210 20% 96%;
+    --popover: 30 12% 14%;
+    --popover-foreground: 40 20% 92%;
 
-    --primary: 158 60% 45%;
-    --primary-foreground: 220 20% 8%;
+    --primary: 35 25% 70%;
+    --primary-foreground: 30 15% 10%;
 
-    --secondary: 220 15% 18%;
-    --secondary-foreground: 210 20% 90%;
+    --secondary: 30 10% 20%;
+    --secondary-foreground: 40 20% 85%;
 
-    --muted: 220 15% 18%;
-    --muted-foreground: 215 15% 55%;
+    --muted: 30 10% 18%;
+    --muted-foreground: 35 15% 55%;
 
-    --accent: 158 40% 15%;
-    --accent-foreground: 158 60% 60%;
+    --accent: 35 15% 18%;
+    --accent-foreground: 35 25% 75%;
 
-    --destructive: 0 62% 45%;
+    --destructive: 0 55% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 20%;
-    --input: 220 15% 20%;
-    --ring: 158 60% 45%;
+    --border: 30 10% 22%;
+    --input: 30 10% 22%;
+    --ring: 35 25% 70%;
 
-    --surface-elevated: 220 18% 13%;
-    --surface-sunken: 220 20% 6%;
+    --surface-elevated: 30 12% 16%;
+    --surface-sunken: 30 15% 8%;
     
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 30 15% 10%;
+    --sidebar-foreground: 40 20% 90%;
+    --sidebar-primary: 35 25% 70%;
+    --sidebar-primary-foreground: 30 15% 10%;
+    --sidebar-accent: 30 10% 18%;
+    --sidebar-accent-foreground: 40 20% 90%;
+    --sidebar-border: 30 10% 20%;
+    --sidebar-ring: 35 25% 70%;
   }
 }
 
@@ -109,22 +111,46 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight text-foreground;
+  h1, h2, h3 {
+    @apply font-serif font-medium tracking-tight text-foreground;
+  }
+
+  h4, h5, h6 {
+    @apply font-sans font-semibold tracking-tight text-foreground;
   }
 }
 
 @layer components {
   .panel {
-    @apply bg-card rounded-xl border border-border shadow-sm;
+    @apply bg-card border border-border;
   }
 
   .panel-header {
-    @apply px-5 py-4 border-b border-border;
+    @apply px-6 py-5 border-b border-border;
   }
 
   .panel-content {
-    @apply p-5;
+    @apply p-6;
+  }
+
+  /* Elegant frame for upload area */
+  .upload-frame {
+    @apply relative bg-card border-2 border-border transition-all duration-300;
+    background: linear-gradient(135deg, hsl(40 33% 99%) 0%, hsl(35 25% 96%) 100%);
+  }
+
+  .upload-frame:hover {
+    @apply border-primary/40;
+  }
+
+  /* Product card styling */
+  .product-card {
+    @apply bg-card border border-border overflow-hidden transition-all duration-300;
+  }
+
+  .product-card:hover {
+    @apply border-primary/30 shadow-lg;
+    transform: translateY(-2px);
   }
 }
 

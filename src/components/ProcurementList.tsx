@@ -1,16 +1,8 @@
-import { FileDown, ExternalLink } from "lucide-react";
+import { FileDown, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { AnalysisResult, ProcurementItem } from "@/hooks/useAnalyzeRoom";
+import { ProductCard } from "./ProductCard";
 
 const economyData: ProcurementItem[] = [
   {
@@ -200,27 +192,27 @@ export function ProcurementList({ isComplete, budgetTier, analysisResult }: Proc
   const getBudgetLabel = (budget: string) => {
     switch (budget) {
       case "economy":
-        return "Economy ($)";
+        return "Economy";
       case "luxury":
-        return "Luxury ($$$)";
+        return "Luxury";
       case "standard":
       default:
-        return "Standard ($$)";
+        return "Standard";
     }
   };
 
   return (
-    <div className="panel h-full flex flex-col">
-      <div className="panel-header flex items-center justify-between">
+    <div className="h-full flex flex-col pb-24 lg:pb-0">
+      {/* Header */}
+      <div className="flex items-start justify-between mb-8">
         <div>
-          <h2 className="text-lg font-semibold">Procurement List</h2>
-          <p className="text-sm text-muted-foreground mt-1">
+          <h2 className="font-serif text-2xl text-foreground">
+            {isComplete ? "Your Curated Selection" : "Material Selection"}
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1 font-light">
             {isComplete ? (
               <span className="flex items-center gap-2">
-                Your curated shopping list
-                <Badge variant="outline" className="text-xs">
-                  {getBudgetLabel(budgetTier)}
-                </Badge>
+                {data.length} materials • {getBudgetLabel(budgetTier)} tier
               </span>
             ) : (
               "Results will appear here"
@@ -232,109 +224,53 @@ export function ProcurementList({ isComplete, budgetTier, analysisResult }: Proc
             variant="outline"
             size="sm"
             onClick={handleExportPDF}
-            className="gap-2"
+            className="gap-2 border-border hover:bg-accent"
           >
             <FileDown className="w-4 h-4" />
-            Export PDF
+            Export
           </Button>
         )}
       </div>
 
-      <div className="panel-content flex-1 overflow-auto">
-        {isComplete ? (
-          <div className="stagger-children">
-            <div className="rounded-xl border overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider">
-                      Detected Item
-                    </TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider">
-                      Material Suggestion
-                    </TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider hidden lg:table-cell">
-                      Why This Match?
-                    </TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-right">
-                      Est. Price
-                    </TableHead>
-                    <TableHead className="font-semibold text-xs uppercase tracking-wider text-right">
-                      Action
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {data.map((item) => (
-                    <TableRow key={item.id} className="group">
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-primary" />
-                          <span className="font-medium">{item.detectedItem}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div>
-                          <p className="font-medium text-sm">{item.materialSuggestion}</p>
-                          <Badge variant="secondary" className="mt-1 text-xs font-normal">
-                            {item.retailer}
-                          </Badge>
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden lg:table-cell">
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {item.matchReason}
-                        </p>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <span className="font-semibold text-primary">
-                          {item.estimatedPrice}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <a
-                          href={item.searchUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors opacity-80 group-hover:opacity-100"
-                        >
-                          <span className="hidden sm:inline">Shop at {item.retailer}</span>
-                          <span className="sm:hidden">Shop</span>
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+      {/* Content */}
+      {isComplete ? (
+        <div className="flex-1">
+          {/* Product Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {data.map((item, index) => (
+              <ProductCard key={item.id} item={item} index={index} />
+            ))}
+          </div>
 
-            {/* Total estimate */}
-            <div className="mt-4 p-4 bg-accent rounded-xl flex items-center justify-between">
+          {/* Total Estimate */}
+          <div className="mt-8 p-6 bg-accent border border-border">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-foreground">Estimated Total</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="font-serif text-lg text-foreground">Estimated Total</p>
+                <p className="text-sm text-muted-foreground font-light">
                   Based on average room dimensions
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-bold text-primary">{total}</p>
-                <p className="text-xs text-muted-foreground">excl. labor</p>
+                <p className="font-serif text-3xl text-foreground">{total}</p>
+                <p className="text-xs text-muted-foreground font-light uppercase tracking-wider">
+                  excl. labor
+                </p>
               </div>
             </div>
           </div>
-        ) : (
-          <div className="h-full flex flex-col items-center justify-center text-center py-12">
-            <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-              <FileDown className="w-7 h-7 text-muted-foreground" />
-            </div>
-            <h3 className="font-semibold text-foreground mb-1">No Results Yet</h3>
-            <p className="text-sm text-muted-foreground max-w-[200px]">
-              Upload an inspiration photo and run the analysis to see your shopping list
-            </p>
+        </div>
+      ) : (
+        <div className="flex-1 flex flex-col items-center justify-center text-center py-16">
+          <div className="w-20 h-20 rounded-full border-2 border-border flex items-center justify-center mb-6">
+            <Package className="w-8 h-8 text-muted-foreground" />
           </div>
-        )}
-      </div>
+          <h3 className="font-serif text-xl text-foreground mb-2">No Results Yet</h3>
+          <p className="text-sm text-muted-foreground font-light max-w-[240px]">
+            Upload an inspiration photo and run the analysis to see your curated shopping list
+          </p>
+        </div>
+      )}
     </div>
   );
 }

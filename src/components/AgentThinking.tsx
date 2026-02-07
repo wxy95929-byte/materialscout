@@ -1,4 +1,4 @@
-import { Check, Loader2, Circle, Search, Filter, ShoppingBag, Eye } from "lucide-react";
+import { Check, Loader2, Search, Filter, ShoppingBag, Eye } from "lucide-react";
 
 interface Step {
   id: string;
@@ -10,26 +10,26 @@ interface Step {
 const steps: Step[] = [
   {
     id: "geometry",
-    label: "Analyzing Image Geometry",
-    description: "Detecting room layout, surfaces, and spatial relationships",
+    label: "Analyzing Image",
+    description: "Detecting room layout and spatial relationships",
     icon: <Eye className="w-4 h-4" />,
   },
   {
     id: "materials",
     label: "Identifying Materials",
-    description: "Distinguishing between marble, porcelain, wood types, and finishes",
+    description: "Distinguishing textures, finishes, and material types",
     icon: <Search className="w-4 h-4" />,
   },
   {
     id: "budget",
-    label: "Applying Budget Filters",
-    description: "Matching material grades to your selected price tier",
+    label: "Applying Filters",
+    description: "Matching material grades to your budget tier",
     icon: <Filter className="w-4 h-4" />,
   },
   {
     id: "retailers",
-    label: "Searching Retailers",
-    description: "Finding available products from trusted suppliers",
+    label: "Finding Sources",
+    description: "Searching trusted suppliers for availability",
     icon: <ShoppingBag className="w-4 h-4" />,
   },
 ];
@@ -37,7 +37,7 @@ const steps: Step[] = [
 type StepStatus = "pending" | "active" | "completed";
 
 interface AgentThinkingProps {
-  currentStep: number; // -1 = not started, 0-3 = active step, 4 = all complete
+  currentStep: number;
   isAnalyzing: boolean;
 }
 
@@ -50,112 +50,116 @@ export function AgentThinking({ currentStep, isAnalyzing }: AgentThinkingProps) 
   };
 
   return (
-    <div className="panel h-full flex flex-col">
-      <div className="panel-header">
-        <h2 className="text-lg font-semibold">Agent Thinking Process</h2>
-        <p className="text-sm text-muted-foreground mt-1">
+    <div className="h-full flex flex-col">
+      {/* Header */}
+      <div className="mb-8">
+        <h2 className="font-serif text-2xl text-foreground">
+          Analysis Process
+        </h2>
+        <p className="text-sm text-muted-foreground mt-1 font-light">
           {isAnalyzing
             ? "AI is analyzing your inspiration..."
             : currentStep >= steps.length
             ? "Analysis complete"
-            : "Upload a photo to begin analysis"}
+            : "Upload a photo to begin"}
         </p>
       </div>
 
-      <div className="panel-content flex-1">
-        <div className="space-y-1">
-          {steps.map((step, index) => {
-            const status = getStepStatus(index);
-            const isLast = index === steps.length - 1;
+      {/* Steps */}
+      <div className="space-y-2">
+        {steps.map((step, index) => {
+          const status = getStepStatus(index);
+          const isLast = index === steps.length - 1;
 
-            return (
-              <div key={step.id} className="relative">
-                {/* Connector line */}
-                {!isLast && (
-                  <div
-                    className={`absolute left-5 top-12 w-0.5 h-8 transition-colors duration-500 ${
-                      status === "completed" ? "bg-primary" : "bg-border"
-                    }`}
-                  />
-                )}
-
+          return (
+            <div key={step.id} className="relative">
+              {/* Connector line */}
+              {!isLast && (
                 <div
-                  className={`relative flex gap-4 p-3 rounded-xl transition-all duration-300 ${
-                    status === "active"
-                      ? "bg-accent"
-                      : status === "completed"
-                      ? "bg-transparent"
-                      : "bg-transparent opacity-50"
+                  className={`absolute left-5 top-14 w-px h-6 transition-colors duration-500 ${
+                    status === "completed" ? "bg-foreground" : "bg-border"
+                  }`}
+                />
+              )}
+
+              <div
+                className={`relative flex gap-4 p-4 transition-all duration-300 ${
+                  status === "active"
+                    ? "bg-accent"
+                    : status === "completed"
+                    ? "bg-transparent"
+                    : "bg-transparent opacity-40"
+                }`}
+              >
+                {/* Step indicator */}
+                <div
+                  className={`relative flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 border-2 ${
+                    status === "completed"
+                      ? "bg-foreground text-background border-foreground"
+                      : status === "active"
+                      ? "bg-transparent text-foreground border-foreground animate-pulse"
+                      : "bg-transparent text-muted-foreground border-border"
                   }`}
                 >
-                  {/* Step indicator */}
-                  <div
-                    className={`relative flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
-                      status === "completed"
-                        ? "bg-primary text-primary-foreground"
-                        : status === "active"
-                        ? "bg-primary/10 text-primary animate-pulse-glow"
-                        : "bg-muted text-muted-foreground"
+                  {status === "completed" ? (
+                    <Check className="w-4 h-4" />
+                  ) : status === "active" ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    step.icon
+                  )}
+                </div>
+
+                {/* Step content */}
+                <div className="flex-1 min-w-0 pt-0.5">
+                  <h3
+                    className={`text-sm font-medium transition-colors duration-300 ${
+                      status === "active" || status === "completed"
+                        ? "text-foreground"
+                        : "text-muted-foreground"
                     }`}
                   >
-                    {status === "completed" ? (
-                      <Check className="w-4 h-4" />
-                    ) : status === "active" ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      step.icon
-                    )}
-                  </div>
+                    {step.label}
+                  </h3>
+                  <p
+                    className={`text-xs mt-0.5 font-light transition-colors duration-300 ${
+                      status === "active"
+                        ? "text-foreground/70"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {step.description}
+                  </p>
 
-                  {/* Step content */}
-                  <div className="flex-1 min-w-0 pt-0.5">
-                    <h3
-                      className={`text-sm font-semibold transition-colors duration-300 ${
-                        status === "active"
-                          ? "text-primary"
-                          : status === "completed"
-                          ? "text-foreground"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {step.label}
-                    </h3>
-                    <p
-                      className={`text-xs mt-0.5 transition-colors duration-300 ${
-                        status === "active"
-                          ? "text-foreground/70"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {step.description}
-                    </p>
-
-                    {/* Active step progress bar */}
-                    {status === "active" && (
-                      <div className="mt-3 h-1.5 bg-primary/20 rounded-full overflow-hidden">
-                        <div className="h-full bg-primary rounded-full animate-shimmer" />
-                      </div>
-                    )}
-                  </div>
+                  {/* Active step progress bar */}
+                  {status === "active" && (
+                    <div className="mt-3 h-0.5 bg-border overflow-hidden">
+                      <div className="h-full bg-foreground animate-shimmer" />
+                    </div>
+                  )}
                 </div>
               </div>
-            );
-          })}
-        </div>
-
-        {/* Summary card when complete */}
-        {currentStep >= steps.length && (
-          <div className="mt-6 p-4 bg-accent rounded-xl border border-primary/20 animate-fade-in-up">
-            <div className="flex items-center gap-2 text-primary">
-              <Check className="w-5 h-5" />
-              <span className="font-semibold text-sm">Analysis Complete</span>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Found 5 materials • Matched to your budget tier • Ready to shop
-            </p>
-          </div>
-        )}
+          );
+        })}
       </div>
+
+      {/* Completion card */}
+      {currentStep >= steps.length && (
+        <div className="mt-8 p-5 bg-accent border border-border animate-fade-in-up">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-foreground flex items-center justify-center">
+              <Check className="w-4 h-4 text-background" />
+            </div>
+            <div>
+              <p className="font-serif text-lg text-foreground">Analysis Complete</p>
+              <p className="text-sm text-muted-foreground font-light">
+                Found {steps.length} materials • Ready to shop
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
