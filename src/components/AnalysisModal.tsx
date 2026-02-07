@@ -3,7 +3,7 @@ import { X, Upload, Sparkles, ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConstraintPills } from "@/components/ConstraintPills";
 import { AnalysisProgress } from "@/components/AnalysisProgress";
-import { PinCard } from "@/components/PinCard";
+import { ResultCard } from "@/components/ResultCard";
 import { useAnalyzeImage, ProductResult } from "@/hooks/useAnalyzeImage";
 import { toast } from "sonner";
 
@@ -290,10 +290,18 @@ export function AnalysisModal({ isOpen, onClose }: AnalysisModalProps) {
               </span>
             </div>
 
-            {/* Masonry Grid with proper spacing */}
-            <div className="columns-2 lg:columns-3 gap-6 pt-4 pb-24">
+            {/* Grid with proper spacing */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-8 pb-32">
               {data.map((product, index) => (
-                <PinCard key={index} product={product} index={index} />
+                <ResultCard
+                  key={index}
+                  id={String(index)}
+                  name={product.product_title}
+                  reasoning={product.reasoning}
+                  price={product.estimated_price}
+                  imageUrl={product.product_image}
+                  shoppingUrl={product.product_url}
+                />
               ))}
             </div>
 
