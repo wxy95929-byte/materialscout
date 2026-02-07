@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide scrollbar for horizontal scroll */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Material Scout Design System
    Warm Minimalist - Inspired by Architectural Digest & Kinfolk
    Primary Colors: Cream (#F9F7F2), Charcoal (#2C2C2C), Taupe accents
