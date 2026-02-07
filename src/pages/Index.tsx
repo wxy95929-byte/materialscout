@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ImageCanvas } from "@/components/ImageCanvas";
 import { IntelligencePanel } from "@/components/IntelligencePanel";
 import { useAnalyzeRoom, AnalysisResult } from "@/hooks/useAnalyzeRoom";
+import { Sparkles } from "lucide-react";
 
 const Index = () => {
   const { analyzeRoom, isAnalyzing } = useAnalyzeRoom();
@@ -115,6 +116,25 @@ const Index = () => {
           onAnalyze={handleAnalyze}
         />
       </div>
+
+      {/* Mobile FAB - Floating Action Button */}
+      <button
+        onClick={handleAnalyze}
+        disabled={!uploadedImage || isAnalyzing}
+        className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 h-14 px-8 rounded-full bg-gradient-to-r from-foreground to-foreground/80 text-background font-semibold flex items-center gap-2 shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95"
+      >
+        {isAnalyzing ? (
+          <>
+            <span className="w-5 h-5 border-2 border-background/30 border-t-background rounded-full animate-spin" />
+            Analyzing...
+          </>
+        ) : (
+          <>
+            <Sparkles className="w-5 h-5" />
+            Analyze Photo
+          </>
+        )}
+      </button>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ConstraintPills } from "@/components/ConstraintPills";
 import { AnalysisProgress } from "@/components/AnalysisProgress";
-import { ProductTicket } from "@/components/ProductTicket";
+import { PinCard } from "@/components/PinCard";
 import { AnalysisResult, ProcurementItem } from "@/hooks/useAnalyzeRoom";
 import { ArrowRight, Sparkles } from "lucide-react";
 
@@ -75,19 +75,19 @@ export function IntelligencePanel({
   const total = analysisResult?.estimatedTotal || getTotalByBudget(budget);
 
   return (
-    <div className="px-8 lg:px-12 py-8 lg:py-12 pb-32 lg:pb-12">
+    <div className="px-4 lg:px-8 py-6 lg:py-10 pb-32 lg:pb-12">
       {/* Header */}
-      <div className="mb-10">
+      <div className="mb-6">
         <h1 className="font-serif text-3xl lg:text-4xl text-foreground tracking-tight">
           Material Scout
         </h1>
-        <p className="text-muted-foreground font-light mt-2 text-sm lg:text-base">
+        <p className="text-muted-foreground font-light mt-1 text-sm">
           Turn Pinterest Dreams into Purchase Lists
         </p>
       </div>
 
-      {/* Constraint Pills */}
-      <div className="mb-10">
+      {/* Horizontal Scrollable Pills */}
+      <div className="mb-6">
         <ConstraintPills
           budget={budget}
           style={style}
@@ -96,29 +96,29 @@ export function IntelligencePanel({
         />
       </div>
 
-      {/* Analyze Button */}
-      <div className="mb-10">
+      {/* Analyze Button - Hidden on mobile (FAB used instead) */}
+      <div className="hidden lg:block mb-8">
         <Button
           onClick={onAnalyze}
           disabled={!hasImage || isAnalyzing}
-          className="h-14 px-8 text-base font-medium bg-foreground hover:bg-foreground/90 text-background gap-3"
+          className="h-12 px-6 text-base font-medium bg-foreground hover:bg-foreground/90 text-background gap-2 rounded-full"
           size="lg"
         >
           {isAnalyzing ? (
             <>
-              <span className="w-5 h-5 border-2 border-background/30 border-t-background rounded-full animate-spin" />
+              <span className="w-4 h-4 border-2 border-background/30 border-t-background rounded-full animate-spin" />
               Analyzing...
             </>
           ) : (
             <>
-              <Sparkles className="w-5 h-5" />
+              <Sparkles className="w-4 h-4" />
               Analyze Photo
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-4 h-4" />
             </>
           )}
         </Button>
         {!hasImage && (
-          <p className="text-sm text-muted-foreground font-light mt-3">
+          <p className="text-sm text-muted-foreground font-light mt-2">
             Upload an image to start
           </p>
         )}
@@ -126,37 +126,37 @@ export function IntelligencePanel({
 
       {/* Analysis Progress */}
       {(isAnalyzing || isComplete) && (
-        <div className="mb-10">
+        <div className="mb-8">
           <AnalysisProgress currentStep={currentStep} isComplete={isComplete} />
         </div>
       )}
 
-      {/* Results */}
+      {/* Pinterest-Style Masonry Grid Results */}
       {isComplete && (
         <div className="animate-fade-in-up">
           <div className="flex items-baseline justify-between mb-6">
-            <h2 className="font-serif text-2xl lg:text-3xl text-foreground">
-              Your Selection
+            <h2 className="font-serif text-2xl text-foreground">
+              Discover Materials
             </h2>
-            <span className="text-sm text-muted-foreground font-light">
-              {data.length} materials found
+            <span className="text-sm text-muted-foreground">
+              {data.length} pins
             </span>
           </div>
 
-          {/* Product Tickets */}
-          <div className="space-y-4 mb-8">
+          {/* Masonry Grid */}
+          <div className="columns-2 lg:columns-3 gap-4">
             {data.map((item, index) => (
-              <ProductTicket key={item.id} item={item} index={index} />
+              <PinCard key={item.id} item={item} index={index} />
             ))}
           </div>
 
           {/* Total */}
-          <div className="flex items-center justify-between py-6 border-t border-border">
+          <div className="flex items-center justify-between py-6 mt-6 border-t border-border">
             <div>
-              <p className="font-serif text-xl text-foreground">Estimated Total</p>
-              <p className="text-sm text-muted-foreground font-light">excl. labor</p>
+              <p className="font-semibold text-lg text-foreground">Estimated Total</p>
+              <p className="text-sm text-muted-foreground">excl. labor</p>
             </div>
-            <p className="font-serif text-4xl text-foreground">{total}</p>
+            <p className="font-serif text-3xl text-foreground">{total}</p>
           </div>
         </div>
       )}
