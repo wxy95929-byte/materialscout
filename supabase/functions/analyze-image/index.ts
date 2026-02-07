@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { GoogleGenerativeAI } from "npm:@google/generative-ai@0.21.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -37,57 +36,78 @@ serve(async (req) => {
       );
     }
 
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) {
-      console.error("GEMINI_API_KEY is not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      console.error("LOVABLE_API_KEY is not configured");
       return new Response(
         JSON.stringify({ error: "API key not configured" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Initialize Google Generative AI with gemini-2.0-flash (stable successor to 1.5-flash)
-    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
-    // Extract base64 data and mime type
-    let base64Data: string;
-    let mimeType: string = "image/jpeg";
-
-    if (imageBase64.startsWith("data:")) {
-      const match = imageBase64.match(/^data:(image\/\w+);base64,(.+)$/);
-      if (match) {
-        mimeType = match[1];
-        base64Data = match[2];
-      } else {
-        return new Response(
-          JSON.stringify({ error: "Invalid image format" }),
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-    } else {
-      base64Data = imageBase64;
-    }
-
     const prompt = `Analyze this room photo as an expert interior designer. Identify 4 key materials or furniture items visible. Return a strictly valid JSON array where each object has: { "name": "Specific Material Name", "reasoning": "Why this material matches the style", "estimated_price": "$XX", "search_term": "best keywords to buy this" }. Return ONLY the JSON array, no markdown, no code blocks, no additional text.`;
 
-    const result = await model.generateContent([
-      prompt,
-      {
-        inlineData: {
-          mimeType,
-          data: base64Data,
-        },
+    // Use Lovable AI Gateway (supports Gemini models without personal quota limits)
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
       },
-    ]);
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: prompt },
+              {
+                type: "image_url",
+                image_url: {
+                  url: imageBase64.startsWith("data:") ? imageBase64 : `data:image/jpeg;base64,${imageBase64}`,
+                },
+              },
+            ],
+          },
+        ],
+      }),
+    });
 
-    const response = result.response;
-    const text = response.text();
+    if (!response.ok) {
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (response.status === 402) {
+        return new Response(
+          JSON.stringify({ error: "AI credits depleted. Please add credits to continue." }),
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      const errorText = await response.text();
+      console.error("AI gateway error:", response.status, errorText);
+      return new Response(
+        JSON.stringify({ error: "AI gateway error" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const aiResponse = await response.json();
+    const content = aiResponse.choices?.[0]?.message?.content;
+
+    if (!content) {
+      return new Response(
+        JSON.stringify({ error: "No response from AI" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     // Parse JSON from response
     let materials: MaterialItem[];
     try {
-      let jsonStr = text.trim();
+      let jsonStr = content.trim();
       // Remove markdown code blocks if present
       if (jsonStr.startsWith("```json")) {
         jsonStr = jsonStr.slice(7);
@@ -99,7 +119,7 @@ serve(async (req) => {
       }
       materials = JSON.parse(jsonStr.trim());
     } catch (parseError) {
-      console.error("Failed to parse AI response:", text);
+      console.error("Failed to parse AI response:", content);
       return new Response(
         JSON.stringify({ error: "Failed to parse AI response" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
