@@ -8,19 +8,22 @@ const Index = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currentStep, setCurrentStep] = useState(-1);
   const [isComplete, setIsComplete] = useState(false);
+  const [selectedBudget, setSelectedBudget] = useState<string>("");
 
-  const handleAnalyze = (file: File, budget: string, style: string) => {
+  const simulateAnalysis = (file: File, budget: string, style: string) => {
     console.log("Starting analysis:", { file: file.name, budget, style });
     setIsAnalyzing(true);
     setCurrentStep(0);
     setIsComplete(false);
+    setSelectedBudget(budget);
   };
 
-  // Simulate step progression when analyzing
+  // Step progression during 3-second analysis
   useEffect(() => {
     if (!isAnalyzing) return;
 
-    const stepDurations = [2000, 2500, 1800, 2200]; // Different durations for each step
+    // Each step takes ~750ms to complete all 4 steps in ~3 seconds
+    const stepDurations = [750, 750, 750, 750];
     
     if (currentStep < 4) {
       const timer = setTimeout(() => {
@@ -31,7 +34,7 @@ const Index = () => {
           setIsAnalyzing(false);
           setIsComplete(true);
         }
-      }, stepDurations[currentStep] || 2000);
+      }, stepDurations[currentStep] || 750);
 
       return () => clearTimeout(timer);
     }
@@ -45,7 +48,7 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[calc(100vh-7rem)]">
           {/* Left Panel - Upload & Constraints */}
           <div className="lg:col-span-3">
-            <UploadPanel onAnalyze={handleAnalyze} isAnalyzing={isAnalyzing} />
+            <UploadPanel onAnalyze={simulateAnalysis} isAnalyzing={isAnalyzing} />
           </div>
 
           {/* Center Panel - Agent Thinking */}
@@ -55,7 +58,7 @@ const Index = () => {
 
           {/* Right Panel - Procurement List */}
           <div className="lg:col-span-5">
-            <ProcurementList isComplete={isComplete} />
+            <ProcurementList isComplete={isComplete} budgetTier={selectedBudget} />
           </div>
         </div>
       </main>
