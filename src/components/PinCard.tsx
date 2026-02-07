@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { ExternalLink, Heart, ScanSearch } from "lucide-react";
-import { ProcurementItem } from "@/hooks/useAnalyzeRoom";
+import { ProductResult } from "@/hooks/useAnalyzeImage";
 import { toast } from "sonner";
 
 interface PinCardProps {
-  item: ProcurementItem;
+  product: ProductResult;
   index: number;
 }
 
-// High-quality Unsplash images with larger dimensions for Pinterest-style cards
-const getPlaceholderImage = (detectedItem: string): string => {
-  const itemLower = detectedItem.toLowerCase();
+// Fallback placeholder images when no real image is available
+const getFallbackImage = (itemName: string): string => {
+  const itemLower = itemName.toLowerCase();
   
   if (itemLower.includes("floor")) {
     return "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=400&h=600&fit=crop";
@@ -21,10 +21,10 @@ const getPlaceholderImage = (detectedItem: string): string => {
   if (itemLower.includes("backsplash") || itemLower.includes("tile")) {
     return "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=400&h=550&fit=crop";
   }
-  if (itemLower.includes("hardware") || itemLower.includes("cabinet") || itemLower.includes("pull")) {
+  if (itemLower.includes("cabinet") || itemLower.includes("pull") || itemLower.includes("hardware")) {
     return "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=400&h=400&fit=crop";
   }
-  if (itemLower.includes("light") || itemLower.includes("pendant") || itemLower.includes("fixture")) {
+  if (itemLower.includes("light") || itemLower.includes("pendant") || itemLower.includes("lamp")) {
     return "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=650&fit=crop";
   }
   if (itemLower.includes("rug") || itemLower.includes("carpet")) {
@@ -42,13 +42,25 @@ const getPlaceholderImage = (detectedItem: string): string => {
   if (itemLower.includes("chair")) {
     return "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=400&h=550&fit=crop";
   }
+  if (itemLower.includes("bed") || itemLower.includes("mattress")) {
+    return "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400&h=500&fit=crop";
+  }
+  if (itemLower.includes("desk") || itemLower.includes("office")) {
+    return "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400&h=500&fit=crop";
+  }
   return "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=400&h=500&fit=crop";
 };
 
-export function PinCard({ item, index }: PinCardProps) {
+export function PinCard({ product, index }: PinCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  // Use real product image from Tavily, fallback to placeholder
+  const imageUrl = (!imageError && product.product_image) 
+    ? product.product_image 
+    : getFallbackImage(product.item_name);
 
   const handleVisualSearch = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -57,11 +69,11 @@ export function PinCard({ item, index }: PinCardProps) {
     // Simulate visual search
     setTimeout(() => {
       setIsSearching(false);
-      toast.success("Found 12 similar materials", {
-        description: `Searching for more like "${item.materialSuggestion}"`,
+      toast.success("Found similar products", {
+        description: `Searching for more like "${product.item_name}"`,
         action: {
           label: "View",
-          onClick: () => console.log("View similar items"),
+          onClick: () => window.open(product.product_url, "_blank"),
         },
       });
     }, 1500);
@@ -80,10 +92,18 @@ export function PinCard({ item, index }: PinCardProps) {
         {/* Image Container */}
         <div className="relative aspect-[3/4]">
           <img
-            src={getPlaceholderImage(item.detectedItem)}
-            alt={item.materialSuggestion}
+            src={imageUrl}
+            alt={product.product_title}
             className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-75"
+            onError={() => setImageError(true)}
           />
+          
+          {/* Real Product Badge */}
+          {product.product_image && !imageError && (
+            <div className="absolute top-3 left-3 px-2 py-1 rounded-full bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs font-medium">
+              Real Product
+            </div>
+          )}
           
           {/* Visual Search Button - Always visible bottom right */}
           <button
@@ -114,9 +134,9 @@ export function PinCard({ item, index }: PinCardProps) {
               />
             </button>
 
-            {/* Buy Now Button - Bottom Right */}
+            {/* Buy Now Button - Links to REAL product URL */}
             <a
-              href={item.searchUrl}
+              href={product.product_url}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
@@ -128,13 +148,19 @@ export function PinCard({ item, index }: PinCardProps) {
           </div>
         </div>
 
-        {/* Content - Minimalist Info */}
+        {/* Content - Product Info */}
         <div className="p-4 bg-card">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+            {product.item_name}
+          </p>
           <h3 className="font-semibold text-foreground text-base leading-snug line-clamp-2">
-            {item.materialSuggestion}
+            {product.product_title}
           </h3>
-          <span className="inline-block mt-2 text-sm text-muted-foreground">
-            {item.estimatedPrice}
+          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+            {product.reasoning}
+          </p>
+          <span className="inline-block mt-2 text-sm font-medium text-foreground">
+            {product.estimated_price}
           </span>
         </div>
       </div>
