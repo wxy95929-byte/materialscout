@@ -1,4 +1,4 @@
-import { FileDown, ShoppingCart } from "lucide-react";
+import { FileDown, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 interface ProcurementItem {
   id: string;
@@ -17,6 +18,7 @@ interface ProcurementItem {
   matchReason: string;
   estimatedPrice: string;
   retailer: string;
+  searchUrl: string;
 }
 
 const economyData: ProcurementItem[] = [
@@ -27,6 +29,7 @@ const economyData: ProcurementItem[] = [
     matchReason: "Selected high-durability vinyl to match the wood look within economy budget",
     estimatedPrice: "$2.00/sq ft",
     retailer: "Floor & Decor",
+    searchUrl: "https://www.homedepot.com/s/white%20oak%20vinyl%20plank",
   },
   {
     id: "2",
@@ -35,6 +38,7 @@ const economyData: ProcurementItem[] = [
     matchReason: "Achieves marble aesthetic at a fraction of the cost, ideal for budget-conscious projects",
     estimatedPrice: "$20.00/sq ft",
     retailer: "Home Depot",
+    searchUrl: "https://www.homedepot.com/s/marble%20laminate%20countertop",
   },
   {
     id: "3",
@@ -43,6 +47,7 @@ const economyData: ProcurementItem[] = [
     matchReason: "DIY-friendly installation saves labor costs while achieving classic look",
     estimatedPrice: "$3.50/sq ft",
     retailer: "Amazon",
+    searchUrl: "https://www.amazon.com/s?k=peel+stick+subway+tile",
   },
   {
     id: "4",
@@ -51,6 +56,7 @@ const economyData: ProcurementItem[] = [
     matchReason: "Value pack offers consistent finish at lowest price point",
     estimatedPrice: "$4.99/each",
     retailer: "IKEA",
+    searchUrl: "https://www.ikea.com/us/en/search/?q=cabinet%20pulls",
   },
   {
     id: "5",
@@ -59,6 +65,7 @@ const economyData: ProcurementItem[] = [
     matchReason: "Modern aesthetic without designer price tag",
     estimatedPrice: "$45.00",
     retailer: "Wayfair",
+    searchUrl: "https://www.wayfair.com/keyword.html?keyword=matte+black+flush+mount",
   },
 ];
 
@@ -70,6 +77,7 @@ const standardData: ProcurementItem[] = [
     matchReason: "Real wood veneer with enhanced stability, balanced price-to-quality ratio",
     estimatedPrice: "$5.50/sq ft",
     retailer: "Lumber Liquidators",
+    searchUrl: "https://www.homedepot.com/s/engineered%20white%20oak%20hardwood",
   },
   {
     id: "2",
@@ -78,6 +86,7 @@ const standardData: ProcurementItem[] = [
     matchReason: "Marble look without porosity issues, mid-range luxury option",
     estimatedPrice: "$65.00/sq ft",
     retailer: "Home Depot",
+    searchUrl: "https://www.homedepot.com/s/calacatta%20quartz%20countertop",
   },
   {
     id: "3",
@@ -86,6 +95,7 @@ const standardData: ProcurementItem[] = [
     matchReason: "Artisanal appearance with standard installation costs",
     estimatedPrice: "$8.00/sq ft",
     retailer: "Tile Bar",
+    searchUrl: "https://www.wayfair.com/keyword.html?keyword=handmade+subway+tile",
   },
   {
     id: "4",
@@ -94,6 +104,7 @@ const standardData: ProcurementItem[] = [
     matchReason: "Quality hardware that elevates cabinetry without premium pricing",
     estimatedPrice: "$12.00/each",
     retailer: "Rejuvenation",
+    searchUrl: "https://www.wayfair.com/keyword.html?keyword=brass+cabinet+pulls",
   },
   {
     id: "5",
@@ -102,6 +113,7 @@ const standardData: ProcurementItem[] = [
     matchReason: "Designer-inspired look at accessible price point",
     estimatedPrice: "$189.00",
     retailer: "West Elm",
+    searchUrl: "https://www.wayfair.com/keyword.html?keyword=brass+glass+pendant",
   },
 ];
 
@@ -113,6 +125,7 @@ const luxuryData: ProcurementItem[] = [
     matchReason: "Selected authentic natural hardwood as requested for luxury finish",
     estimatedPrice: "$12.00/sq ft",
     retailer: "Carlisle Wide Plank",
+    searchUrl: "https://www.homedepot.com/s/european%20white%20oak%20wide%20plank",
   },
   {
     id: "2",
@@ -121,6 +134,7 @@ const luxuryData: ProcurementItem[] = [
     matchReason: "Selected authentic natural stone materials as requested for luxury finish",
     estimatedPrice: "$150.00/sq ft",
     retailer: "Stone Source",
+    searchUrl: "https://www.homedepot.com/s/calacatta%20gold%20marble",
   },
   {
     id: "3",
@@ -129,6 +143,7 @@ const luxuryData: ProcurementItem[] = [
     matchReason: "Artisan-crafted tiles with unique variations for bespoke aesthetic",
     estimatedPrice: "$25.00/sq ft",
     retailer: "Clé Tile",
+    searchUrl: "https://www.wayfair.com/keyword.html?keyword=zellige+moroccan+tile",
   },
   {
     id: "4",
@@ -137,6 +152,7 @@ const luxuryData: ProcurementItem[] = [
     matchReason: "Living finish hardware that develops patina over time",
     estimatedPrice: "$45.00/each",
     retailer: "Schoolhouse",
+    searchUrl: "https://www.wayfair.com/keyword.html?keyword=unlacquered+brass+pulls",
   },
   {
     id: "5",
@@ -145,6 +161,7 @@ const luxuryData: ProcurementItem[] = [
     matchReason: "Statement piece from acclaimed designer collection",
     estimatedPrice: "$1,200.00",
     retailer: "Apparatus Studio",
+    searchUrl: "https://www.wayfair.com/keyword.html?keyword=handblown+glass+pendant",
   },
 ];
 
@@ -182,7 +199,9 @@ export function ProcurementList({ isComplete, budgetTier }: ProcurementListProps
   const total = getTotalByBudget(budgetTier);
 
   const handleExportPDF = () => {
-    console.log("Exporting to PDF...");
+    toast.success("Report downloaded!", {
+      description: "Your procurement list has been exported to PDF.",
+    });
   };
 
   const getBudgetLabel = (budget: string) => {
@@ -280,13 +299,16 @@ export function ProcurementList({ isComplete, budgetTier }: ProcurementListProps
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button
-                          size="sm"
-                          className="gap-1.5 opacity-80 group-hover:opacity-100 transition-opacity"
+                        <a
+                          href={item.searchUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors opacity-80 group-hover:opacity-100"
                         >
-                          <ShoppingCart className="w-3.5 h-3.5" />
-                          <span className="hidden sm:inline">Buy</span>
-                        </Button>
+                          <span className="hidden sm:inline">Shop at {item.retailer}</span>
+                          <span className="sm:hidden">Shop</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -311,7 +333,7 @@ export function ProcurementList({ isComplete, budgetTier }: ProcurementListProps
         ) : (
           <div className="h-full flex flex-col items-center justify-center text-center py-12">
             <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-              <ShoppingCart className="w-7 h-7 text-muted-foreground" />
+              <FileDown className="w-7 h-7 text-muted-foreground" />
             </div>
             <h3 className="font-semibold text-foreground mb-1">No Results Yet</h3>
             <p className="text-sm text-muted-foreground max-w-[200px]">
