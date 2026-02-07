@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Search, ShoppingCart } from "lucide-react";
 import { ProductResult } from "@/hooks/useAnalyzeImage";
-import { Button } from "@/components/ui/button";
 
 interface PinCardProps {
   product: ProductResult;
@@ -16,11 +15,8 @@ export function PinCard({ product, index }: PinCardProps) {
     ? product.product_image
     : "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80";
 
-  // Open Google Image Search for similar items
-  const handleFindSimilar = () => {
-    const query = encodeURIComponent(product.product_title + " interior design");
-    window.open(`https://www.google.com/search?tbm=isch&q=${query}`, '_blank', 'noopener,noreferrer');
-  };
+  // Build the Google Image Search URL for "Find Similar"
+  const findSimilarUrl = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(product.product_title + " interior design discovery")}`;
 
   return (
     <div 
@@ -69,24 +65,25 @@ export function PinCard({ product, index }: PinCardProps) {
             {product.estimated_price}
           </p>
 
-          {/* Action Buttons - Side by Side */}
+          {/* Action Buttons - Side by Side (Pure <a> tags to avoid iframe blocking) */}
           <div className="flex gap-3">
-            {/* Find Similar - Secondary Button */}
-            <Button
-              variant="outline"
-              onClick={handleFindSimilar}
-              className="flex-1 h-11 gap-2 rounded-full border-border hover:bg-accent"
+            {/* Find Similar - Pure <a> tag, NO onClick */}
+            <a
+              href={findSimilarUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 h-11 gap-2 rounded-full border border-border hover:bg-accent inline-flex items-center justify-center text-sm font-medium no-underline text-foreground"
             >
               <Search className="w-4 h-4" />
-              <span className="text-sm font-medium">Find Similar</span>
-            </Button>
+              <span>Find Similar</span>
+            </a>
 
-            {/* Buy Now - Simple <a> tag to avoid iframe issues */}
+            {/* Buy Now - Pure <a> tag, NO onClick */}
             <a
               href={product.product_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 h-11 gap-2 rounded-full bg-foreground text-background hover:bg-foreground/90 inline-flex items-center justify-center text-sm font-medium"
+              className="flex-1 h-11 gap-2 rounded-full bg-foreground text-background hover:bg-foreground/90 inline-flex items-center justify-center text-sm font-medium no-underline"
             >
               <ShoppingCart className="w-4 h-4" />
               <span>Buy Now</span>
