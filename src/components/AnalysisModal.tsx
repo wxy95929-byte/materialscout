@@ -103,7 +103,11 @@ export function AnalysisModal({ isOpen, onClose }: AnalysisModalProps) {
     setAnalysisResult(null);
 
     try {
-      const result = await analyzeImage(uploadedImage);
+      // Pass budget and style to enable demo mode for "modern" + "standard"
+      const result = await analyzeImage(uploadedImage, {
+        budget: selectedBudget,
+        style: selectedStyle,
+      });
 
       const products = result.products || [];
 
