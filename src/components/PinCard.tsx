@@ -49,13 +49,20 @@ export function PinCard({ product, index }: PinCardProps) {
 
         {/* Info Area - Typography-Led */}
         <div className="p-5 bg-card">
-          {/* Category Label */}
-          <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">
-            {product.item_name}
-          </p>
+          {/* Category + Source */}
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs text-muted-foreground uppercase tracking-widest">
+              {product.item_name}
+            </p>
+            {product.product_source && (
+              <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                {product.product_source}
+              </span>
+            )}
+          </div>
           
           {/* Hero Title - Large Serif */}
-          <h3 className="font-serif text-xl font-semibold text-foreground leading-tight mb-3">
+          <h3 className="font-serif text-xl font-semibold text-foreground leading-tight mb-3 line-clamp-2">
             {product.product_title}
           </h3>
           
