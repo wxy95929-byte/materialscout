@@ -84,19 +84,26 @@ serve(async (req) => {
 
     const geminiPrompt = `Analyze this room image. Identify the 3 most prominent furniture items or decor pieces that users would want to purchase.
 
-For each item, generate:
-1. item_name: A short descriptive name (e.g., "Curved Sofa", "Coffee Table")
-2. shopping_query: A specific Google Shopping search query to find this exact product (e.g., "modern curved white boucle sofa", "round oak wood coffee table minimalist")
-3. reasoning: A brief explanation of why this item stands out and would be desirable to purchase
+CRITICAL: Generate LONG-TAIL VISUAL QUERIES with specific details:
+- Do NOT just say "Sofa" or "Lamp"
+- You MUST include the exact COLOR, MATERIAL, and SHAPE visible in the image
+- Example: Instead of "Modern Sofa", generate "curved white boucle sofa"
+- Example: Instead of "Lamp", generate "white mushroom table lamp ceramic"
+- Example: Instead of "Coffee Table", generate "round natural oak wood coffee table"
+
+For each item, provide:
+1. item_name: A short descriptive name with the primary color (e.g., "White Curved Sofa", "Oak Coffee Table")
+2. shopping_query: A HIGHLY SPECIFIC Google Shopping query with COLOR + MATERIAL + SHAPE (e.g., "curved white boucle fabric sofa", "round light oak wood coffee table minimalist")
+3. reasoning: Why this item stands out and would be desirable
 
 Return ONLY a raw JSON array. Do not use Markdown formatting or code blocks.
 
 Example format:
 [
   {
-    "item_name": "Curved Sofa",
-    "shopping_query": "modern curved white boucle sofa",
-    "reasoning": "The organic curved shape and textured fabric creates a stunning focal point"
+    "item_name": "White Curved Sofa",
+    "shopping_query": "curved white boucle fabric sofa modern",
+    "reasoning": "The organic curved shape and textured white boucle fabric creates a stunning focal point"
   }
 ]
 
