@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 export interface MaterialItem {
   name: string;
@@ -18,7 +17,7 @@ export function useAnalyzeImage() {
   const [result, setResult] = useState<AnalyzeImageResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const analyzeImage = async (imageBase64: string): Promise<AnalyzeImageResult | null> => {
+  const analyzeImage = async (imageBase64: string): Promise<AnalyzeImageResult> => {
     setIsAnalyzing(true);
     setError(null);
 
@@ -31,17 +30,16 @@ export function useAnalyzeImage() {
         throw new Error(fnError.message);
       }
 
-      if (data.error) {
+      if (data?.error) {
         throw new Error(data.error);
       }
 
       setResult(data);
-      return data;
+      return data as AnalyzeImageResult;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Analysis failed";
       setError(message);
-      toast.error("Analysis failed", { description: message });
-      return null;
+      throw new Error(message);
     } finally {
       setIsAnalyzing(false);
     }

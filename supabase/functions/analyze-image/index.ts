@@ -45,7 +45,7 @@ serve(async (req) => {
       );
     }
 
-    const prompt = `Analyze this room photo as an expert interior designer. Identify 4 key materials or furniture items visible. Return a strictly valid JSON array where each object has: { "name": "Specific Material Name", "reasoning": "Why this material matches the style", "estimated_price": "$XX", "search_term": "best keywords to buy this" }. Return ONLY the JSON array, no markdown, no code blocks, no additional text.`;
+    const prompt = `Analyze this image. Return ONLY a raw JSON array of 5 items. Do not use Markdown formatting. Do not wrap in code blocks.\n\nEach item must be an object with exactly these keys:\n- name (string)\n- reasoning (string)\n- estimated_price (string like \"$120\")\n- search_term (string)\n\nReturn ONLY the JSON array, nothing else.`;
 
     // Use Lovable AI Gateway (supports Gemini models without personal quota limits)
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -107,18 +107,10 @@ serve(async (req) => {
     // Parse JSON from response
     let materials: MaterialItem[];
     try {
-      let jsonStr = content.trim();
-      // Remove markdown code blocks if present
-      if (jsonStr.startsWith("```json")) {
-        jsonStr = jsonStr.slice(7);
-      } else if (jsonStr.startsWith("```")) {
-        jsonStr = jsonStr.slice(3);
-      }
-      if (jsonStr.endsWith("```")) {
-        jsonStr = jsonStr.slice(0, -3);
-      }
-      materials = JSON.parse(jsonStr.trim());
-    } catch (parseError) {
+      const rawText = content;
+      const cleanJson = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+      materials = JSON.parse(cleanJson);
+    } catch {
       console.error("Failed to parse AI response:", content);
       return new Response(
         JSON.stringify({ error: "Failed to parse AI response" }),
