@@ -156,11 +156,11 @@ export function AnalysisModal({ isOpen, onClose }: AnalysisModalProps) {
     setIsComplete(false);
     setAnalysisResult(null);
 
-    const result = await analyzeImage(uploadedImage);
-    
-    if (result && result.materials) {
+    try {
+      const result = await analyzeImage(uploadedImage);
+
       // Convert MaterialItem[] to ProcurementItem[]
-      const items: ProcurementItem[] = result.materials.map((mat, idx) => ({
+      const items: ProcurementItem[] = (result.materials || []).map((mat, idx) => ({
         id: String(idx + 1),
         detectedItem: mat.name,
         materialSuggestion: mat.name,
@@ -169,17 +169,24 @@ export function AnalysisModal({ isOpen, onClose }: AnalysisModalProps) {
         retailer: "Search Online",
         searchUrl: `https://www.google.com/search?q=${encodeURIComponent(mat.search_term)}`,
       }));
+
+      if (!items.length) {
+        throw new Error("Empty response from analysis API");
+      }
+
       setAnalysisResult(items);
       setCurrentStep(4);
       setIsComplete(true);
       setStep("results");
-    } else {
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      toast.error(`API Error: ${message}`);
       setCurrentStep(-1);
     }
   };
 
-  const data = analysisResult || getDataByBudget(selectedBudget);
-  const total = analysisResult ? calculateTotal(analysisResult) : getTotalByBudget(selectedBudget);
+  const data = analysisResult ?? [];
+  const total = analysisResult ? calculateTotal(analysisResult) : "--";
 
   if (!isOpen) return null;
 
