@@ -15,18 +15,30 @@ export interface AnalyzeImageResult {
   products: ProductResult[];
 }
 
+export interface AnalyzeImageOptions {
+  budget?: string;
+  style?: string;
+}
+
 export function useAnalyzeImage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalyzeImageResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const analyzeImage = async (imageBase64: string): Promise<AnalyzeImageResult> => {
+  const analyzeImage = async (
+    imageBase64: string,
+    options?: AnalyzeImageOptions
+  ): Promise<AnalyzeImageResult> => {
     setIsAnalyzing(true);
     setError(null);
 
     try {
       const { data, error: fnError } = await supabase.functions.invoke("analyze-image", {
-        body: { imageBase64 },
+        body: { 
+          imageBase64,
+          budget: options?.budget,
+          style: options?.style,
+        },
       });
 
       if (fnError) {
