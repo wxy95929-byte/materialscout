@@ -1,48 +1,57 @@
 import { useState, useEffect } from "react";
-import { Header } from "@/components/Header";
-import { UploadPanel } from "@/components/UploadPanel";
-import { AgentThinking } from "@/components/AgentThinking";
-import { ProcurementList } from "@/components/ProcurementList";
+import { ImageCanvas } from "@/components/ImageCanvas";
+import { IntelligencePanel } from "@/components/IntelligencePanel";
 import { useAnalyzeRoom, AnalysisResult } from "@/hooks/useAnalyzeRoom";
 
 const Index = () => {
   const { analyzeRoom, isAnalyzing } = useAnalyzeRoom();
   const [currentStep, setCurrentStep] = useState(-1);
   const [isComplete, setIsComplete] = useState(false);
-  const [selectedBudget, setSelectedBudget] = useState<string>("");
+  const [selectedBudget, setSelectedBudget] = useState<string>("standard");
+  const [selectedStyle, setSelectedStyle] = useState<string>("modern");
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
-  const handleAnalyze = async (file: File, budget: string, style: string) => {
-    console.log("Starting AI analysis:", { file: file.name, budget, style });
+  const handleImageUpload = (file: File, preview: string) => {
+    setUploadedFile(file);
+    setUploadedImage(preview);
+    setIsComplete(false);
+    setAnalysisResult(null);
+    setCurrentStep(-1);
+  };
+
+  const handleClearImage = () => {
+    setUploadedFile(null);
+    setUploadedImage(null);
+    setIsComplete(false);
+    setAnalysisResult(null);
+    setCurrentStep(-1);
+  };
+
+  const handleAnalyze = async () => {
+    if (!uploadedFile || !uploadedImage) return;
+
+    console.log("Starting AI analysis:", { file: uploadedFile.name, budget: selectedBudget, style: selectedStyle });
     setCurrentStep(0);
     setIsComplete(false);
-    setSelectedBudget(budget);
     setAnalysisResult(null);
 
-    // Convert file to base64
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const imageBase64 = e.target?.result as string;
-      
-      // Start the analysis
-      const result = await analyzeRoom(imageBase64, budget, style);
-      
-      if (result) {
-        setAnalysisResult(result);
-        setCurrentStep(4);
-        setIsComplete(true);
-      } else {
-        setCurrentStep(-1);
-      }
-    };
-    reader.readAsDataURL(file);
+    const result = await analyzeRoom(uploadedImage, selectedBudget, selectedStyle);
+    
+    if (result) {
+      setAnalysisResult(result);
+      setCurrentStep(4);
+      setIsComplete(true);
+    } else {
+      setCurrentStep(-1);
+    }
   };
 
   // Step progression during analysis
   useEffect(() => {
     if (!isAnalyzing || currentStep < 0) return;
 
-    // Progress through steps while analyzing
     if (currentStep < 3) {
       const timer = setTimeout(() => {
         setCurrentStep((prev) => prev + 1);
@@ -53,50 +62,59 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="max-w-7xl mx-auto px-6 pb-8">
-        {/* Hero Section with Tagline */}
-        <div className="py-8 lg:py-12 text-center lg:text-left">
-          <p className="text-sm text-muted-foreground font-light tracking-widest uppercase mb-2">
-            AI-Powered Design Assistant
-          </p>
+      {/* Desktop: Split Screen Layout */}
+      <div className="hidden lg:flex min-h-screen">
+        {/* Left Half - The Canvas (Fixed) */}
+        <div className="w-1/2 h-screen sticky top-0">
+          <ImageCanvas 
+            uploadedImage={uploadedImage}
+            onImageUpload={handleImageUpload}
+            onClearImage={handleClearImage}
+          />
         </div>
 
-        {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-          {/* Left Column - Upload */}
-          <div className="lg:col-span-4">
-            <UploadPanel onAnalyze={handleAnalyze} isAnalyzing={isAnalyzing} />
-          </div>
-
-          {/* Center Column - Agent Process */}
-          <div className="lg:col-span-3">
-            <AgentThinking currentStep={currentStep} isAnalyzing={isAnalyzing} />
-          </div>
-
-          {/* Right Column - Results */}
-          <div className="lg:col-span-5">
-            <ProcurementList 
-              isComplete={isComplete} 
-              budgetTier={selectedBudget}
-              analysisResult={analysisResult}
-            />
-          </div>
+        {/* Right Half - The Intelligence (Scrollable) */}
+        <div className="w-1/2 min-h-screen overflow-y-auto">
+          <IntelligencePanel
+            budget={selectedBudget}
+            style={selectedStyle}
+            onBudgetChange={setSelectedBudget}
+            onStyleChange={setSelectedStyle}
+            currentStep={currentStep}
+            isAnalyzing={isAnalyzing}
+            isComplete={isComplete}
+            analysisResult={analysisResult}
+            hasImage={!!uploadedImage}
+            onAnalyze={handleAnalyze}
+          />
         </div>
-      </main>
+      </div>
 
-      {/* Editorial Footer */}
-      <footer className="border-t border-border mt-16 py-8 bg-card">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="font-serif text-lg text-foreground">Material Scout</p>
-            <p className="text-sm text-muted-foreground font-light">
-              © 2024 All rights reserved
-            </p>
-          </div>
+      {/* Mobile: Stacked Layout */}
+      <div className="lg:hidden">
+        {/* Image on Top */}
+        <div className="w-full aspect-[4/3]">
+          <ImageCanvas 
+            uploadedImage={uploadedImage}
+            onImageUpload={handleImageUpload}
+            onClearImage={handleClearImage}
+          />
         </div>
-      </footer>
+
+        {/* Results Below */}
+        <IntelligencePanel
+          budget={selectedBudget}
+          style={selectedStyle}
+          onBudgetChange={setSelectedBudget}
+          onStyleChange={setSelectedStyle}
+          currentStep={currentStep}
+          isAnalyzing={isAnalyzing}
+          isComplete={isComplete}
+          analysisResult={analysisResult}
+          hasImage={!!uploadedImage}
+          onAnalyze={handleAnalyze}
+        />
+      </div>
     </div>
   );
 };
