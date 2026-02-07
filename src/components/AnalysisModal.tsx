@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ConstraintPills } from "@/components/ConstraintPills";
 import { AnalysisProgress } from "@/components/AnalysisProgress";
 import { PinCard } from "@/components/PinCard";
-import { useAnalyzeRoom, AnalysisResult, ProcurementItem } from "@/hooks/useAnalyzeRoom";
+import { useAnalyzeImage, MaterialItem } from "@/hooks/useAnalyzeImage";
+import { ProcurementItem } from "@/hooks/useAnalyzeRoom";
 import { toast } from "sonner";
 
 interface AnalysisModalProps {
@@ -56,8 +57,20 @@ const getTotalByBudget = (budget: string): string => {
   }
 };
 
+const calculateTotal = (items: ProcurementItem[]): string => {
+  let total = 0;
+  for (const item of items) {
+    const match = item.estimatedPrice.match(/\$?([\d,]+(?:\.\d{2})?)/);
+    if (match) {
+      const value = parseFloat(match[1].replace(/,/g, ""));
+      if (!isNaN(value)) total += value;
+    }
+  }
+  return `$${total.toLocaleString()}`;
+};
+
 export function AnalysisModal({ isOpen, onClose }: AnalysisModalProps) {
-  const { analyzeRoom, isAnalyzing } = useAnalyzeRoom();
+  const { analyzeImage, isAnalyzing } = useAnalyzeImage();
   const [step, setStep] = useState<"upload" | "configure" | "results">("upload");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -65,7 +78,7 @@ export function AnalysisModal({ isOpen, onClose }: AnalysisModalProps) {
   const [selectedStyle, setSelectedStyle] = useState("modern");
   const [currentStep, setCurrentStep] = useState(-1);
   const [isComplete, setIsComplete] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<ProcurementItem[] | null>(null);
   const [dragActive, setDragActive] = useState(false);
 
   // Reset state when modal closes
@@ -143,10 +156,20 @@ export function AnalysisModal({ isOpen, onClose }: AnalysisModalProps) {
     setIsComplete(false);
     setAnalysisResult(null);
 
-    const result = await analyzeRoom(uploadedImage, selectedBudget, selectedStyle);
+    const result = await analyzeImage(uploadedImage);
     
-    if (result) {
-      setAnalysisResult(result);
+    if (result && result.materials) {
+      // Convert MaterialItem[] to ProcurementItem[]
+      const items: ProcurementItem[] = result.materials.map((mat, idx) => ({
+        id: String(idx + 1),
+        detectedItem: mat.name,
+        materialSuggestion: mat.name,
+        matchReason: mat.reasoning,
+        estimatedPrice: mat.estimated_price,
+        retailer: "Search Online",
+        searchUrl: `https://www.google.com/search?q=${encodeURIComponent(mat.search_term)}`,
+      }));
+      setAnalysisResult(items);
       setCurrentStep(4);
       setIsComplete(true);
       setStep("results");
@@ -155,8 +178,8 @@ export function AnalysisModal({ isOpen, onClose }: AnalysisModalProps) {
     }
   };
 
-  const data = analysisResult?.items || getDataByBudget(selectedBudget);
-  const total = analysisResult?.estimatedTotal || getTotalByBudget(selectedBudget);
+  const data = analysisResult || getDataByBudget(selectedBudget);
+  const total = analysisResult ? calculateTotal(analysisResult) : getTotalByBudget(selectedBudget);
 
   if (!isOpen) return null;
 
