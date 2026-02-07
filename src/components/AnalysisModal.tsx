@@ -290,8 +290,8 @@ export function AnalysisModal({ isOpen, onClose }: AnalysisModalProps) {
               </span>
             </div>
 
-            {/* Masonry Grid */}
-            <div className="columns-2 lg:columns-3 gap-4 mb-8">
+            {/* Masonry Grid with proper spacing */}
+            <div className="columns-2 lg:columns-3 gap-6 pt-4 pb-24">
               {data.map((product, index) => (
                 <PinCard key={index} product={product} index={index} />
               ))}
