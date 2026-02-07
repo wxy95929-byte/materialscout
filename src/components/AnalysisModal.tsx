@@ -281,7 +281,7 @@ export function AnalysisModal({ isOpen, onClose }: AnalysisModalProps) {
               </div>
             )}
 
-            <div className="flex items-baseline justify-between mb-6">
+            <div className="flex items-baseline justify-between mb-6 pt-8">
               <h2 className="font-serif text-2xl text-foreground">
                 Discover Materials
               </h2>

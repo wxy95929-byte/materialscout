@@ -16,12 +16,6 @@ export function PinCard({ product, index }: PinCardProps) {
     ? product.product_image
     : "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80";
 
-  // FORCE new tab to avoid "Refused to connect" errors in iframe
-  const handleBuyNow = () => {
-    if (!product.product_url) return;
-    window.open(product.product_url, '_blank', 'noopener,noreferrer');
-  };
-
   // Open Google Image Search for similar items
   const handleFindSimilar = () => {
     const query = encodeURIComponent(product.product_title + " interior design");
@@ -87,14 +81,16 @@ export function PinCard({ product, index }: PinCardProps) {
               <span className="text-sm font-medium">Find Similar</span>
             </Button>
 
-            {/* Buy Now - Primary Button using window.open */}
-            <Button
-              onClick={handleBuyNow}
-              className="flex-1 h-11 gap-2 rounded-full bg-foreground text-background hover:bg-foreground/90"
+            {/* Buy Now - Simple <a> tag to avoid iframe issues */}
+            <a
+              href={product.product_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 h-11 gap-2 rounded-full bg-foreground text-background hover:bg-foreground/90 inline-flex items-center justify-center text-sm font-medium"
             >
               <ShoppingCart className="w-4 h-4" />
-              <span className="text-sm font-medium">Buy Now</span>
-            </Button>
+              <span>Buy Now</span>
+            </a>
           </div>
         </div>
       </div>
