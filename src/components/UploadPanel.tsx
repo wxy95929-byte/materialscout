@@ -9,6 +9,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
 
 interface UploadPanelProps {
   onAnalyze: (file: File, budget: string, style: string) => void;
@@ -43,12 +47,26 @@ export function UploadPanel({ onAnalyze, isAnalyzing }: UploadPanelProps) {
   }, []);
 
   const handleFile = (file: File) => {
-    if (file.type.startsWith("image/")) {
-      setUploadedFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => setPreview(e.target?.result as string);
-      reader.readAsDataURL(file);
+    // Validate file type
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      toast.error("Invalid file type", {
+        description: "Please upload a JPEG, PNG, WebP, or GIF image.",
+      });
+      return;
     }
+
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error("Image too large", {
+        description: "Maximum file size is 5MB. Please choose a smaller image.",
+      });
+      return;
+    }
+
+    setUploadedFile(file);
+    const reader = new FileReader();
+    reader.onload = (e) => setPreview(e.target?.result as string);
+    reader.readAsDataURL(file);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
