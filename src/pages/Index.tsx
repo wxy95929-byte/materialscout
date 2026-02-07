@@ -52,22 +52,30 @@ const Index = () => {
   }, [isAnalyzing, currentStep]);
 
   return (
-    <div className="min-h-screen bg-surface-sunken">
+    <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="max-w-[1800px] mx-auto p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[calc(100vh-7rem)]">
-          {/* Left Panel - Upload & Constraints */}
-          <div className="lg:col-span-3">
+      <main className="max-w-7xl mx-auto px-6 pb-8">
+        {/* Hero Section with Tagline */}
+        <div className="py-8 lg:py-12 text-center lg:text-left">
+          <p className="text-sm text-muted-foreground font-light tracking-widest uppercase mb-2">
+            AI-Powered Design Assistant
+          </p>
+        </div>
+
+        {/* Main Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+          {/* Left Column - Upload */}
+          <div className="lg:col-span-4">
             <UploadPanel onAnalyze={handleAnalyze} isAnalyzing={isAnalyzing} />
           </div>
 
-          {/* Center Panel - Agent Thinking */}
-          <div className="lg:col-span-4">
+          {/* Center Column - Agent Process */}
+          <div className="lg:col-span-3">
             <AgentThinking currentStep={currentStep} isAnalyzing={isAnalyzing} />
           </div>
 
-          {/* Right Panel - Procurement List */}
+          {/* Right Column - Results */}
           <div className="lg:col-span-5">
             <ProcurementList 
               isComplete={isComplete} 
@@ -77,6 +85,18 @@ const Index = () => {
           </div>
         </div>
       </main>
+
+      {/* Editorial Footer */}
+      <footer className="border-t border-border mt-16 py-8 bg-card">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="font-serif text-lg text-foreground">Material Scout</p>
+            <p className="text-sm text-muted-foreground font-light">
+              © 2024 All rights reserved
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

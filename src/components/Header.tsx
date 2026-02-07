@@ -1,38 +1,35 @@
-import { Compass } from "lucide-react";
-
 export function Header() {
   return (
-    <header className="h-16 border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
-      <div className="h-full max-w-[1800px] mx-auto px-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
-            <Compass className="w-5 h-5 text-primary-foreground" />
-          </div>
+    <header className="py-6 lg:py-8 bg-background">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-bold tracking-tight">Material Scout</h1>
-            <p className="text-xs text-muted-foreground -mt-0.5">
+            <h1 className="font-serif text-2xl lg:text-3xl font-medium tracking-tight text-foreground">
+              Material Scout
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1 font-light tracking-wide">
               Turn Pinterest Dreams into Purchase Lists
             </p>
           </div>
-        </div>
 
-        <nav className="flex items-center gap-6">
-          <a
-            href="#"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            How it works
-          </a>
-          <a
-            href="#"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Pricing
-          </a>
-          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-            <span className="text-xs font-semibold text-muted-foreground">JS</span>
-          </div>
-        </nav>
+          <nav className="hidden md:flex items-center gap-8">
+            <a
+              href="#"
+              className="text-sm font-light text-muted-foreground hover:text-foreground transition-colors tracking-wide"
+            >
+              How it Works
+            </a>
+            <a
+              href="#"
+              className="text-sm font-light text-muted-foreground hover:text-foreground transition-colors tracking-wide"
+            >
+              Pricing
+            </a>
+            <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center border border-border">
+              <span className="text-xs font-medium text-muted-foreground">JS</span>
+            </div>
+          </nav>
+        </div>
       </div>
     </header>
   );
