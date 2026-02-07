@@ -57,10 +57,13 @@ export function PinCard({ product, index }: PinCardProps) {
   const [isSearching, setIsSearching] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  // Use real product image from Tavily, fallback to placeholder
-  const imageUrl = (!imageError && product.product_image) 
+  // Always use product_image from backend (now Unsplash-based)
+  const imageUrl = !imageError && product.product_image
     ? product.product_image 
     : getFallbackImage(product.item_name);
+
+  // Check if it's an Unsplash image (curated) vs fallback
+  const isUnsplashImage = product.product_image?.includes("unsplash.com");
 
   const handleVisualSearch = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -98,10 +101,10 @@ export function PinCard({ product, index }: PinCardProps) {
             onError={() => setImageError(true)}
           />
           
-          {/* Real Product Badge */}
-          {product.product_image && !imageError && (
+          {/* Curated Image Badge */}
+          {isUnsplashImage && !imageError && (
             <div className="absolute top-3 left-3 px-2 py-1 rounded-full bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs font-medium">
-              Real Product
+              Curated Match
             </div>
           )}
           

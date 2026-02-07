@@ -9,6 +9,7 @@ const corsHeaders = {
 interface GeminiItem {
   item_name: string;
   search_query: string;
+  visual_keyword: string;
   reasoning: string;
 }
 
@@ -19,13 +20,8 @@ interface TavilyResult {
   score: number;
 }
 
-interface TavilyImage {
-  url: string;
-}
-
 interface TavilyResponse {
   results: TavilyResult[];
-  images?: TavilyImage[];
 }
 
 interface ProductResult {
@@ -33,7 +29,7 @@ interface ProductResult {
   reasoning: string;
   product_title: string;
   product_url: string;
-  product_image: string | null;
+  product_image: string;
   product_snippet: string;
   estimated_price: string;
 }
@@ -86,13 +82,18 @@ serve(async (req) => {
 
     const geminiPrompt = `Analyze this interior image. Identify the 3 most prominent furniture items or materials visible.
 
-For each item, generate a specific, high-intent search query to find this exact product or a close visual alternative for sale online.
+For each item, generate TWO different search strings:
+
+1. search_query: A specific commercial query to find this product for purchase online (e.g., "buy white curved boucle sofa wayfair", "mid century walnut coffee table shop")
+
+2. visual_keyword: A purely aesthetic keyword string for finding matching photography. MUST include the specific COLOR and MATERIAL visible in the photo (e.g., "minimalist white boucle curved sofa interior", "warm beige travertine stone countertop", "brushed brass metal pendant light")
 
 Return ONLY a raw JSON array. Do not use Markdown formatting. Do not wrap in code blocks.
 
 Each item must be an object with exactly these keys:
 - item_name (string): The specific name of the furniture/material
-- search_query (string): A search query to find this product online (e.g., "mid century modern walnut coffee table buy online")
+- search_query (string): Commercial query for purchasing
+- visual_keyword (string): Aesthetic keywords including COLOR and MATERIAL for photo matching
 - reasoning (string): Why this item stands out and what makes it distinctive
 
 Return ONLY the JSON array, nothing else.`;
@@ -168,82 +169,97 @@ Return ONLY the JSON array, nothing else.`;
     }
 
     // ========================================
-    // STEP 2: Agentic Search with Tavily
+    // STEP 2: Hybrid Execution
+    // - Tavily for purchase URLs
+    // - Unsplash for visually accurate images
     // ========================================
-    console.log("Step 2: Searching for real products with Tavily...");
+    console.log("Step 2: Hybrid search - Tavily for links, Unsplash for images...");
 
     const productResults: ProductResult[] = [];
 
     for (const item of geminiItems) {
       try {
-        console.log(`Searching for: ${item.search_query}`);
-        
-        const tavilyResponse = await fetch("https://api.tavily.com/search", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            api_key: TAVILY_API_KEY,
-            query: item.search_query,
-            include_images: true,
-            search_depth: "basic",
-            max_results: 3,
-          }),
-        });
+        console.log(`Processing: ${item.item_name}`);
+        console.log(`  - Search query: ${item.search_query}`);
+        console.log(`  - Visual keyword: ${item.visual_keyword}`);
 
-        if (!tavilyResponse.ok) {
-          console.error(`Tavily search failed for "${item.item_name}":`, tavilyResponse.status);
-          // Add item with fallback data
-          productResults.push({
-            item_name: item.item_name,
-            reasoning: item.reasoning,
-            product_title: item.item_name,
-            product_url: `https://www.google.com/search?q=${encodeURIComponent(item.search_query)}`,
-            product_image: null,
-            product_snippet: "Search for this item online",
-            estimated_price: "Check retailer",
+        // === TAVILY: Find purchase URL ===
+        let productUrl = `https://www.google.com/search?q=${encodeURIComponent(item.search_query)}`;
+        let productTitle = item.item_name;
+        let productSnippet = "View product details";
+        let estimatedPrice = "Check price";
+
+        try {
+          const tavilyResponse = await fetch("https://api.tavily.com/search", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              api_key: TAVILY_API_KEY,
+              query: item.search_query,
+              include_images: false, // We don't need Tavily images
+              search_depth: "basic",
+              max_results: 3,
+            }),
           });
-          continue;
+
+          if (tavilyResponse.ok) {
+            const tavilyData: TavilyResponse = await tavilyResponse.json();
+            const firstResult = tavilyData.results?.[0];
+            
+            if (firstResult) {
+              productUrl = firstResult.url;
+              productTitle = firstResult.title || item.item_name;
+              productSnippet = firstResult.content?.slice(0, 200) || "View product details";
+              
+              // Try to extract price from content
+              const priceMatch = firstResult.content?.match(/\$[\d,]+(?:\.\d{2})?/);
+              if (priceMatch) {
+                estimatedPrice = priceMatch[0];
+              }
+            }
+            console.log(`  - Tavily found: ${productTitle}`);
+          } else {
+            console.error(`  - Tavily search failed: ${tavilyResponse.status}`);
+          }
+        } catch (tavilyError) {
+          console.error(`  - Tavily error:`, tavilyError);
         }
 
-        const tavilyData: TavilyResponse = await tavilyResponse.json();
-        
-        // Get the first valid result
-        const firstResult = tavilyData.results?.[0];
-        const firstImage = tavilyData.images?.[0]?.url || null;
-
-        // Try to extract price from content
-        const priceMatch = firstResult?.content?.match(/\$[\d,]+(?:\.\d{2})?/);
-        const estimatedPrice = priceMatch ? priceMatch[0] : "Check price";
+        // === UNSPLASH: Find visually accurate image ===
+        // Use Unsplash Source API with the visual_keyword for color/material-accurate photos
+        const unsplashKeywords = encodeURIComponent(item.visual_keyword.replace(/\s+/g, ","));
+        const productImage = `https://source.unsplash.com/800x600/?${unsplashKeywords}`;
+        console.log(`  - Unsplash image: ${productImage}`);
 
         productResults.push({
           item_name: item.item_name,
           reasoning: item.reasoning,
-          product_title: firstResult?.title || item.item_name,
-          product_url: firstResult?.url || `https://www.google.com/search?q=${encodeURIComponent(item.search_query)}`,
-          product_image: firstImage,
-          product_snippet: firstResult?.content?.slice(0, 200) || "View product details",
+          product_title: productTitle,
+          product_url: productUrl,
+          product_image: productImage,
+          product_snippet: productSnippet,
           estimated_price: estimatedPrice,
         });
 
-        console.log(`Found product: ${firstResult?.title || "fallback"}`);
-      } catch (searchError) {
-        console.error(`Search error for "${item.item_name}":`, searchError);
-        // Add item with fallback data
+      } catch (itemError) {
+        console.error(`Error processing "${item.item_name}":`, itemError);
+        // Add fallback entry
+        const fallbackKeywords = encodeURIComponent(item.visual_keyword.replace(/\s+/g, ","));
         productResults.push({
           item_name: item.item_name,
           reasoning: item.reasoning,
           product_title: item.item_name,
           product_url: `https://www.google.com/search?q=${encodeURIComponent(item.search_query)}`,
-          product_image: null,
+          product_image: `https://source.unsplash.com/800x600/?${fallbackKeywords}`,
           product_snippet: "Search for this item online",
           estimated_price: "Check retailer",
         });
       }
     }
 
-    console.log("Agentic search complete. Products found:", productResults.length);
+    console.log("Hybrid search complete. Products found:", productResults.length);
 
     return new Response(JSON.stringify({ products: productResults }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
