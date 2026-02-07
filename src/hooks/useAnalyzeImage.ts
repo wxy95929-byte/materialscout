@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-export interface MaterialItem {
-  name: string;
+export interface ProductResult {
+  item_name: string;
   reasoning: string;
+  product_title: string;
+  product_url: string;
+  product_image: string | null;
+  product_snippet: string;
   estimated_price: string;
-  search_term: string;
 }
 
 export interface AnalyzeImageResult {
-  materials: MaterialItem[];
+  products: ProductResult[];
 }
 
 export function useAnalyzeImage() {
