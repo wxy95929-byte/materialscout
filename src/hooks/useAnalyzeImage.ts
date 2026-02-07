@@ -6,8 +6,8 @@ export interface ProductResult {
   reasoning: string;
   product_title: string;
   product_url: string;
-  product_image: string | null;
-  product_snippet: string;
+  product_image: string;
+  product_source: string;
   estimated_price: string;
 }
 

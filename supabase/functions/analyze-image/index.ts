@@ -8,20 +8,22 @@ const corsHeaders = {
 
 interface GeminiItem {
   item_name: string;
-  search_query: string;
-  visual_keyword: string;
+  shopping_query: string;
   reasoning: string;
 }
 
-interface TavilyResult {
+interface SerperShoppingResult {
   title: string;
-  url: string;
-  content: string;
-  score: number;
+  source: string;
+  link: string;
+  price: string;
+  imageUrl: string;
+  rating?: number;
+  ratingCount?: number;
 }
 
-interface TavilyResponse {
-  results: TavilyResult[];
+interface SerperResponse {
+  shopping?: SerperShoppingResult[];
 }
 
 interface ProductResult {
@@ -30,42 +32,9 @@ interface ProductResult {
   product_title: string;
   product_url: string;
   product_image: string;
-  product_snippet: string;
+  product_source: string;
   estimated_price: string;
 }
-
-// ========================================
-// DEMO MODE: Hardcoded perfect results
-// ========================================
-const DEMO_PRODUCTS: ProductResult[] = [
-  {
-    item_name: "Curved Bouclé Sofa",
-    reasoning: "Perfectly matches the organic curved silhouette and textured fabric of the inspiration photo.",
-    product_title: "Gwyneth Bouclé Curved Sofa - Ivory",
-    product_url: "https://www.cb2.com/gwyneth-boucle-loveseat/s533602",
-    product_image: "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=800&q=80",
-    product_snippet: "A stunning curved silhouette in luxurious ivory bouclé fabric.",
-    estimated_price: "$1,499",
-  },
-  {
-    item_name: "Round Coffee Table",
-    reasoning: "Matches the warm wood tones and minimalist geometry.",
-    product_title: "Solid White Oak Round Coffee Table",
-    product_url: "https://www.article.com/product/12562/amoeba-wild-walnut-42-wide-coffee-table",
-    product_image: "https://images.unsplash.com/photo-1532372320572-cda25653a26d?auto=format&fit=crop&w=800&q=80",
-    product_snippet: "Sculptural round table in warm natural oak.",
-    estimated_price: "$450",
-  },
-  {
-    item_name: "Sculptural Table Lamp",
-    reasoning: "Identical sculptural lighting element found on the side table.",
-    product_title: "Mushroom Table Lamp - Matte White",
-    product_url: "https://www.westelm.com/products/sculptural-glass-globe-table-lamp-w3749/",
-    product_image: "https://images.unsplash.com/photo-1513506003013-192a5d52f0bf?auto=format&fit=crop&w=800&q=80",
-    product_snippet: "Modern sculptural lamp with soft diffused glow.",
-    estimated_price: "$120",
-  },
-];
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -73,17 +42,7 @@ serve(async (req) => {
   }
 
   try {
-    const { imageBase64, budget, style } = await req.json();
-
-    // ========================================
-    // DEMO MODE CHECK
-    // ========================================
-    if (style === "modern" && budget === "standard") {
-      console.log("🎬 DEMO MODE: Returning hardcoded perfect results");
-      return new Response(JSON.stringify({ products: DEMO_PRODUCTS }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    const { imageBase64 } = await req.json();
 
     if (!imageBase64) {
       return new Response(
@@ -104,40 +63,42 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) {
       console.error("LOVABLE_API_KEY is not configured");
       return new Response(
-        JSON.stringify({ error: "API key not configured" }),
+        JSON.stringify({ error: "Lovable API key not configured" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const TAVILY_API_KEY = Deno.env.get("TAVILY_API_KEY");
-    if (!TAVILY_API_KEY) {
-      console.error("TAVILY_API_KEY is not configured");
+    const SERPER_API_KEY = Deno.env.get("SERPER_API_KEY");
+    if (!SERPER_API_KEY) {
+      console.error("SERPER_API_KEY is not configured");
       return new Response(
-        JSON.stringify({ error: "Tavily API key not configured" }),
+        JSON.stringify({ error: "Serper API key not configured" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     // ========================================
-    // STEP 1: Visual Reasoning with Gemini
+    // STEP 1: Gemini Visual Analysis
     // ========================================
     console.log("Step 1: Analyzing image with Gemini...");
 
-    const geminiPrompt = `Analyze this interior image. Identify the 3 most prominent furniture items or materials visible.
+    const geminiPrompt = `Analyze this room image. Identify the 3 most prominent furniture items or decor pieces that users would want to purchase.
 
-For each item, generate TWO different search strings:
+For each item, generate:
+1. item_name: A short descriptive name (e.g., "Curved Sofa", "Coffee Table")
+2. shopping_query: A specific Google Shopping search query to find this exact product (e.g., "modern curved white boucle sofa", "round oak wood coffee table minimalist")
+3. reasoning: A brief explanation of why this item stands out and would be desirable to purchase
 
-1. search_query: A specific commercial query to find this product for purchase online (e.g., "buy white curved boucle sofa wayfair", "mid century walnut coffee table shop")
+Return ONLY a raw JSON array. Do not use Markdown formatting or code blocks.
 
-2. visual_keyword: A purely aesthetic keyword string for finding matching photography. MUST include the specific COLOR and MATERIAL visible in the photo (e.g., "minimalist white boucle curved sofa interior", "warm beige travertine stone countertop", "brushed brass metal pendant light")
-
-Return ONLY a raw JSON array. Do not use Markdown formatting. Do not wrap in code blocks.
-
-Each item must be an object with exactly these keys:
-- item_name (string): The specific name of the furniture/material
-- search_query (string): Commercial query for purchasing
-- visual_keyword (string): Aesthetic keywords including COLOR and MATERIAL for photo matching
-- reasoning (string): Why this item stands out and what makes it distinctive
+Example format:
+[
+  {
+    "item_name": "Curved Sofa",
+    "shopping_query": "modern curved white boucle sofa",
+    "reasoning": "The organic curved shape and textured fabric creates a stunning focal point"
+  }
+]
 
 Return ONLY the JSON array, nothing else.`;
 
@@ -212,95 +173,65 @@ Return ONLY the JSON array, nothing else.`;
     }
 
     // ========================================
-    // STEP 2: Hybrid Execution
-    // - Tavily for purchase URLs
-    // - Unsplash for visually accurate images
+    // STEP 2: Serper Google Shopping Search
     // ========================================
-    console.log("Step 2: Hybrid search - Tavily for links, Unsplash for images...");
+    console.log("Step 2: Searching Google Shopping via Serper...");
 
     const productResults: ProductResult[] = [];
 
     for (const item of geminiItems) {
       try {
-        console.log(`Processing: ${item.item_name}`);
-        console.log(`  - Search query: ${item.search_query}`);
-        console.log(`  - Visual keyword: ${item.visual_keyword}`);
+        console.log(`Searching for: "${item.shopping_query}"`);
 
-        // === TAVILY: Find purchase URL ===
-        let productUrl = `https://www.google.com/search?q=${encodeURIComponent(item.search_query)}`;
-        let productTitle = item.item_name;
-        let productSnippet = "View product details";
-        let estimatedPrice = "Check price";
+        const serperResponse = await fetch("https://google.serper.dev/shopping", {
+          method: "POST",
+          headers: {
+            "X-API-KEY": SERPER_API_KEY,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            q: item.shopping_query,
+            gl: "us",
+            hl: "en",
+          }),
+        });
 
-        try {
-          const tavilyResponse = await fetch("https://api.tavily.com/search", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              api_key: TAVILY_API_KEY,
-              query: item.search_query,
-              include_images: false,
-              search_depth: "basic",
-              max_results: 3,
-            }),
-          });
-
-          if (tavilyResponse.ok) {
-            const tavilyData: TavilyResponse = await tavilyResponse.json();
-            const firstResult = tavilyData.results?.[0];
-            
-            if (firstResult) {
-              productUrl = firstResult.url;
-              productTitle = firstResult.title || item.item_name;
-              productSnippet = firstResult.content?.slice(0, 200) || "View product details";
-              
-              // Try to extract price from content
-              const priceMatch = firstResult.content?.match(/\$[\d,]+(?:\.\d{2})?/);
-              if (priceMatch) {
-                estimatedPrice = priceMatch[0];
-              }
-            }
-            console.log(`  - Tavily found: ${productTitle}`);
-          } else {
-            console.error(`  - Tavily search failed: ${tavilyResponse.status}`);
-          }
-        } catch (tavilyError) {
-          console.error(`  - Tavily error:`, tavilyError);
+        if (!serperResponse.ok) {
+          console.error(`Serper search failed for "${item.item_name}":`, serperResponse.status);
+          continue;
         }
 
-        // === UNSPLASH: Find visually accurate image ===
-        const unsplashKeywords = encodeURIComponent(item.visual_keyword.replace(/\s+/g, ","));
-        const productImage = `https://source.unsplash.com/800x600/?${unsplashKeywords}`;
-        console.log(`  - Unsplash image: ${productImage}`);
+        const serperData: SerperResponse = await serperResponse.json();
+        const firstResult = serperData.shopping?.[0];
 
-        productResults.push({
-          item_name: item.item_name,
-          reasoning: item.reasoning,
-          product_title: productTitle,
-          product_url: productUrl,
-          product_image: productImage,
-          product_snippet: productSnippet,
-          estimated_price: estimatedPrice,
-        });
-
+        if (firstResult) {
+          console.log(`  ✓ Found: ${firstResult.title} - ${firstResult.price} from ${firstResult.source}`);
+          
+          productResults.push({
+            item_name: item.item_name,
+            reasoning: item.reasoning,
+            product_title: firstResult.title,
+            product_url: firstResult.link,
+            product_image: firstResult.imageUrl,
+            product_source: firstResult.source,
+            estimated_price: firstResult.price || "Check price",
+          });
+        } else {
+          console.log(`  ✗ No shopping results for "${item.shopping_query}"`);
+        }
       } catch (itemError) {
         console.error(`Error processing "${item.item_name}":`, itemError);
-        const fallbackKeywords = encodeURIComponent(item.visual_keyword.replace(/\s+/g, ","));
-        productResults.push({
-          item_name: item.item_name,
-          reasoning: item.reasoning,
-          product_title: item.item_name,
-          product_url: `https://www.google.com/search?q=${encodeURIComponent(item.search_query)}`,
-          product_image: `https://source.unsplash.com/800x600/?${fallbackKeywords}`,
-          product_snippet: "Search for this item online",
-          estimated_price: "Check retailer",
-        });
       }
     }
 
-    console.log("Hybrid search complete. Products found:", productResults.length);
+    if (productResults.length === 0) {
+      return new Response(
+        JSON.stringify({ error: "No products found. Try a different image." }),
+        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log("Search complete. Products found:", productResults.length);
 
     return new Response(JSON.stringify({ products: productResults }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
