@@ -10,16 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-
-interface ProcurementItem {
-  id: string;
-  detectedItem: string;
-  materialSuggestion: string;
-  matchReason: string;
-  estimatedPrice: string;
-  retailer: string;
-  searchUrl: string;
-}
+import { AnalysisResult, ProcurementItem } from "@/hooks/useAnalyzeRoom";
 
 const economyData: ProcurementItem[] = [
   {
@@ -192,11 +183,13 @@ const getTotalByBudget = (budget: string): string => {
 interface ProcurementListProps {
   isComplete: boolean;
   budgetTier: string;
+  analysisResult?: AnalysisResult | null;
 }
 
-export function ProcurementList({ isComplete, budgetTier }: ProcurementListProps) {
-  const data = getDataByBudget(budgetTier);
-  const total = getTotalByBudget(budgetTier);
+export function ProcurementList({ isComplete, budgetTier, analysisResult }: ProcurementListProps) {
+  // Use AI results if available, otherwise fall back to mock data
+  const data: ProcurementItem[] = analysisResult?.items || getDataByBudget(budgetTier);
+  const total = analysisResult?.estimatedTotal || getTotalByBudget(budgetTier);
 
   const handleExportPDF = () => {
     toast.success("Report downloaded!", {
