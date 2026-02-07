@@ -10,42 +10,34 @@ interface ResultCardProps {
   shoppingUrl: string;
 }
 
-export const ResultCard = ({ name, reasoning, price, imageUrl, shoppingUrl }: ResultCardProps) => {
-  
-  // FUNCTION 1: Handle "Buy Now" - Forces a new tab safely
-  const handleBuyNow = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const targetUrl = shoppingUrl && shoppingUrl.startsWith('http') 
-      ? shoppingUrl 
+export const ResultCard = ({
+  name,
+  reasoning,
+  price,
+  imageUrl,
+  shoppingUrl,
+}: ResultCardProps) => {
+  // Build URLs directly into hrefs (no onClick/window.open) to avoid iframe/modal issues.
+  const buyNowUrl =
+    shoppingUrl && shoppingUrl.startsWith("http")
+      ? shoppingUrl
       : `https://www.google.com/search?q=${encodeURIComponent(name)}&tbm=shop`;
-    
-    window.open(targetUrl, '_blank', 'noopener,noreferrer');
-  };
 
-  // FUNCTION 2: Handle "Find Similar" - Opens Google Images
-  const handleFindSimilar = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const query = encodeURIComponent(name + " interior design");
-    const googleImageUrl = `https://www.google.com/search?tbm=isch&q=${query}`;
-    
-    window.open(googleImageUrl, '_blank', 'noopener,noreferrer');
-  };
+  const findSimilarUrl = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(
+    `${name} interior design discovery`
+  )}`;
 
   return (
     <div className="flex flex-col h-[500px] w-full bg-card rounded-3xl overflow-hidden shadow-lg border border-border hover:shadow-xl transition-all duration-300 group">
-      
       {/* 1. IMAGE SECTION (Fixed Height - 55%) */}
       <div className="relative h-[55%] w-full overflow-hidden bg-muted">
-        <img 
-          src={imageUrl} 
-          alt={name} 
+        <img
+          src={imageUrl}
+          alt={name}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           onError={(e) => {
-            (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80";
+            (e.target as HTMLImageElement).src =
+              "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80";
           }}
         />
         {/* Price Tag Overlay */}
@@ -66,28 +58,33 @@ export const ResultCard = ({ name, reasoning, price, imageUrl, shoppingUrl }: Re
           </p>
         </div>
 
-        {/* 3. BUTTONS (Fixed at Bottom) */}
+        {/* 3. ACTIONS (Fixed at Bottom) */}
         <div className="flex gap-3 mt-4 pt-4 border-t border-border">
-          
-          {/* Find Similar Button */}
-          <button 
-            onClick={handleFindSimilar}
-            className="flex-1 px-4 py-3 bg-card border border-border text-foreground rounded-xl text-sm font-medium hover:bg-accent transition-colors flex items-center justify-center gap-2 cursor-pointer"
+          {/* Find Similar */}
+          <a
+            href={findSimilarUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 px-4 py-3 bg-card border border-border text-foreground rounded-xl text-sm font-medium hover:bg-accent transition-colors inline-flex items-center justify-center gap-2 no-underline"
           >
             <Search className="w-4 h-4" />
-            <span className="hidden sm:inline">Similar</span>
-          </button>
-          
-          {/* Buy Now Button */}
-          <button 
-            onClick={handleBuyNow}
-            className="flex-[1.5] px-4 py-3 bg-foreground text-background rounded-xl text-sm font-medium hover:bg-foreground/90 transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+            <span className="hidden sm:inline">Find Similar</span>
+            <span className="sm:hidden">Similar</span>
+          </a>
+
+          {/* Buy Now */}
+          <a
+            href={buyNowUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-[1.5] px-4 py-3 bg-foreground text-background rounded-xl text-sm font-medium hover:bg-foreground/90 transition-colors inline-flex items-center justify-center gap-2 shadow-sm no-underline"
           >
             <ShoppingCart className="w-4 h-4" />
             Buy Now
-          </button>
+          </a>
         </div>
       </div>
     </div>
   );
 };
+
