@@ -7,32 +7,47 @@ interface ProductTicketProps {
   index: number;
 }
 
-// Placeholder images for different material types
+// Placeholder images for different material types using relevant Unsplash keywords
 const getPlaceholderImage = (detectedItem: string): string => {
   const itemLower = detectedItem.toLowerCase();
   
   if (itemLower.includes("floor")) {
-    return "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop";
+    return "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=120&h=120&fit=crop"; // wood flooring
   }
   if (itemLower.includes("counter")) {
-    return "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=120&h=120&fit=crop";
+    return "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=120&h=120&fit=crop"; // marble countertop
   }
   if (itemLower.includes("backsplash") || itemLower.includes("tile")) {
-    return "https://images.unsplash.com/photo-1620626011761-996317b8d101?w=120&h=120&fit=crop";
+    return "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=120&h=120&fit=crop"; // subway tile
   }
-  if (itemLower.includes("hardware") || itemLower.includes("cabinet")) {
-    return "https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=120&h=120&fit=crop";
+  if (itemLower.includes("hardware") || itemLower.includes("cabinet") || itemLower.includes("pull")) {
+    return "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=120&h=120&fit=crop"; // brass cabinet hardware
   }
-  if (itemLower.includes("light") || itemLower.includes("fixture")) {
-    return "https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=120&h=120&fit=crop";
+  if (itemLower.includes("light") || itemLower.includes("pendant") || itemLower.includes("fixture")) {
+    return "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=120&h=120&fit=crop"; // pendant light
   }
-  return "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=120&h=120&fit=crop";
+  if (itemLower.includes("rug") || itemLower.includes("carpet")) {
+    return "https://images.unsplash.com/photo-1600166898405-da9535204843?w=120&h=120&fit=crop"; // beige rug
+  }
+  if (itemLower.includes("table") || itemLower.includes("coffee")) {
+    return "https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=120&h=120&fit=crop"; // modern coffee table
+  }
+  if (itemLower.includes("paint") || itemLower.includes("wall")) {
+    return "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=120&h=120&fit=crop"; // wall paint
+  }
+  if (itemLower.includes("sofa") || itemLower.includes("couch")) {
+    return "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=120&h=120&fit=crop"; // modern sofa
+  }
+  if (itemLower.includes("chair")) {
+    return "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=120&h=120&fit=crop"; // accent chair
+  }
+  return "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=120&h=120&fit=crop"; // interior design default
 };
 
 export function ProductTicket({ item, index }: ProductTicketProps) {
   return (
     <div 
-      className="flex items-stretch gap-4 bg-card border border-border p-4 hover:border-foreground/20 transition-all animate-fade-in-up"
+      className="flex items-stretch gap-4 bg-card p-4 hover:bg-accent/30 transition-all animate-fade-in-up"
       style={{ animationDelay: `${index * 0.08}s` }}
     >
       {/* Thumbnail */}
