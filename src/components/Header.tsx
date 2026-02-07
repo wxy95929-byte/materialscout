@@ -11,7 +11,7 @@ export function Header() {
           <div>
             <h1 className="text-lg font-bold tracking-tight">Material Scout</h1>
             <p className="text-xs text-muted-foreground -mt-0.5">
-              AI-Powered Renovation Assistant
+              Turn Pinterest Dreams into Purchase Lists
             </p>
           </div>
         </div>
