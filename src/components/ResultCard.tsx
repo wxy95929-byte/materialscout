@@ -66,10 +66,6 @@ export const ResultCard = ({
           {reasoning || "Selected based on your room's style and color palette."}
         </p>
 
-        {/* DEBUG: Show raw URL */}
-        <p className="text-xs text-red-600 break-all font-mono bg-yellow-100 p-2 border border-red-300 my-2">
-          DEBUG LINK: {shoppingUrl || "NULL"}
-        </p>
 
         {/* BUTTONS - PURE <a> TAGS */}
         <div className="mt-auto flex gap-3 pt-2">
