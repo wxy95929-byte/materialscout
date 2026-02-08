@@ -3,7 +3,7 @@ import { ConstraintPills } from "@/components/ConstraintPills";
 import { AnalysisProgress } from "@/components/AnalysisProgress";
 import { PinCard } from "@/components/PinCard";
 import { ProductResult } from "@/hooks/useAnalyzeImage";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, DollarSign } from "lucide-react";
 
 interface IntelligencePanelProps {
   budget: string;
@@ -17,6 +17,12 @@ interface IntelligencePanelProps {
   hasImage: boolean;
   onAnalyze: () => void;
 }
+
+const budgetLabels: Record<string, { label: string; icon: string; description: string }> = {
+  economy: { label: "Economy", icon: "$", description: "Budget-friendly finds" },
+  standard: { label: "Standard", icon: "$$", description: "Mid-range selections" },
+  luxury: { label: "Luxury", icon: "$$$", description: "Premium designer pieces" },
+};
 
 export function IntelligencePanel({
   budget,
@@ -108,13 +114,26 @@ export function IntelligencePanel({
       {/* Pinterest-Style Masonry Grid Results */}
       {isComplete && data.length > 0 && (
         <div className="animate-fade-in-up">
-          <div className="flex items-baseline justify-between mb-6">
-            <h2 className="font-serif text-2xl text-foreground">
-              Discover Materials
-            </h2>
-            <span className="text-sm text-muted-foreground">
-              {data.length} pins
-            </span>
+          {/* Results Header with Budget Indicator */}
+          <div className="flex flex-col gap-3 mb-6">
+            <div className="flex items-baseline justify-between">
+              <h2 className="font-serif text-2xl text-foreground">
+                Discover Materials
+              </h2>
+              <span className="text-sm text-muted-foreground">
+                {data.length} pins
+              </span>
+            </div>
+            
+            {/* Budget Tier Badge */}
+            <div className="inline-flex items-center gap-2 self-start px-4 py-2 rounded-full bg-accent border border-border">
+              <span className="text-sm font-semibold text-foreground">
+                {budgetLabels[budget]?.icon || "$$"}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {budgetLabels[budget]?.description || "Curated for you"}
+              </span>
+            </div>
           </div>
 
           {/* Masonry Grid */}
