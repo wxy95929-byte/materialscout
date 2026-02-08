@@ -499,7 +499,7 @@ export default function Result() {
   const [searchParams] = useSearchParams();
   const isDemo = searchParams.get("demo") === "true";
   const styleId = searchParams.get("style") || "";
-  const refImage = searchParams.get("refImage") || "";
+  const demoImage = searchParams.get("demoImage") || "";
 
   // Get demo data for the selected style
   const demoData = demoResultsByStyle[styleId] || defaultDemo;
@@ -564,12 +564,12 @@ export default function Result() {
         {/* Two-Column Layout: Reference Image + Results */}
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left: Reference Image (sticky on desktop) */}
-          {refImage && (
+          {demoImage && (
             <div className="lg:w-1/3 lg:flex-shrink-0">
               <div className="lg:sticky lg:top-24">
                 <div className="rounded-2xl overflow-hidden border border-border shadow-sm">
                   <img 
-                    src={decodeURIComponent(refImage)} 
+                    src={decodeURIComponent(demoImage)} 
                     alt={`${demoData.styleName} reference`}
                     className="w-full aspect-[4/3] object-cover"
                     onError={(e) => {
