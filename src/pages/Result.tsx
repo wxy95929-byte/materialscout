@@ -499,6 +499,7 @@ export default function Result() {
   const [searchParams] = useSearchParams();
   const isDemo = searchParams.get("demo") === "true";
   const styleId = searchParams.get("style") || "";
+  const refImage = searchParams.get("refImage") || "";
 
   // Get demo data for the selected style
   const demoData = demoResultsByStyle[styleId] || defaultDemo;
@@ -548,7 +549,7 @@ export default function Result() {
         </div>
       </header>
 
-      {/* Results Grid */}
+      {/* Results Content */}
       <main className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
         {/* Demo Badge */}
         {isDemo && (
@@ -560,19 +561,45 @@ export default function Result() {
           </div>
         )}
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {demoData.items.map((item) => (
-            <ResultCard
-              key={item.id}
-              id={item.id}
-              name={item.name}
-              reasoning={item.reasoning}
-              price={item.price}
-              imageUrl={item.imageUrl}
-              shoppingUrl={item.shoppingUrl}
-            />
-          ))}
+        {/* Two-Column Layout: Reference Image + Results */}
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Left: Reference Image (sticky on desktop) */}
+          {refImage && (
+            <div className="lg:w-1/3 lg:flex-shrink-0">
+              <div className="lg:sticky lg:top-24">
+                <div className="rounded-2xl overflow-hidden border border-border shadow-sm">
+                  <img 
+                    src={decodeURIComponent(refImage)} 
+                    alt={`${demoData.styleName} reference`}
+                    className="w-full aspect-[4/3] object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "https://placehold.co/800x600/e0e0e0/999999?text=Reference+Image";
+                    }}
+                  />
+                </div>
+                <p className="text-sm text-muted-foreground mt-3 text-center">
+                  Your style inspiration
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Right: Results Grid */}
+          <div className="flex-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {demoData.items.map((item) => (
+                <ResultCard
+                  key={item.id}
+                  id={item.id}
+                  name={item.name}
+                  reasoning={item.reasoning}
+                  price={item.price}
+                  imageUrl={item.imageUrl}
+                  shoppingUrl={item.shoppingUrl}
+                />
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Total */}
