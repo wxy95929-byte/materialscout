@@ -1,54 +1,62 @@
+import { useNavigate } from "react-router-dom";
 import { DiscoveryCard } from "./DiscoveryCard";
 
 interface DiscoveryGridProps {
   onCardClick?: (style: string) => void;
 }
 
-// Featured styles with curated Unsplash images
+// Featured styles with curated Unsplash images - specifically interior design shots
 const featuredStyles = [
   {
-    id: "1",
+    id: "modern-farmhouse",
     title: "Modern Farmhouse Kitchen",
-    imageUrl: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=800&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=800",
   },
   {
-    id: "2",
+    id: "japandi-bathroom",
     title: "Japandi Bathroom",
-    imageUrl: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=600&h=700&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=800",
   },
   {
-    id: "3",
+    id: "industrial-loft",
     title: "Industrial Loft Living Room",
-    imageUrl: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&h=900&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800",
   },
   {
-    id: "4",
-    title: "Scandinavian Bedroom",
-    imageUrl: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&h=750&fit=crop",
+    id: "boho-bedroom",
+    title: "Bohemian Bedroom",
+    imageUrl: "https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?auto=format&fit=crop&w=800",
   },
   {
-    id: "5",
-    title: "Mediterranean Patio",
-    imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=850&fit=crop",
+    id: "scandinavian-living",
+    title: "Scandinavian Living Room",
+    imageUrl: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800",
   },
   {
-    id: "6",
+    id: "coastal-dining",
     title: "Coastal Dining Room",
-    imageUrl: "https://images.unsplash.com/photo-1617806118233-18e1de247200?w=600&h=700&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=800",
   },
   {
-    id: "7",
-    title: "Bohemian Reading Nook",
-    imageUrl: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=900&fit=crop",
+    id: "mid-century",
+    title: "Mid-Century Modern",
+    imageUrl: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800",
   },
   {
-    id: "8",
+    id: "minimalist-office",
     title: "Minimalist Home Office",
-    imageUrl: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&h=800&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800",
   },
 ];
 
 export function DiscoveryGrid({ onCardClick }: DiscoveryGridProps) {
+  const navigate = useNavigate();
+
+  const handleCardClick = (styleId: string, styleTitle: string) => {
+    // Navigate to demo results page
+    navigate(`/result?demo=true&style=${styleId}`);
+  };
+
   return (
     <div className="px-4 lg:px-8 pb-24">
       {/* Section Header */}
@@ -67,7 +75,7 @@ export function DiscoveryGrid({ onCardClick }: DiscoveryGridProps) {
             title={style.title}
             imageUrl={style.imageUrl}
             index={index}
-            onClick={() => onCardClick?.(style.title)}
+            onClick={() => handleCardClick(style.id, style.title)}
           />
         ))}
       </div>
