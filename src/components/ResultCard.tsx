@@ -17,74 +17,74 @@ export const ResultCard = ({
   imageUrl,
   shoppingUrl,
 }: ResultCardProps) => {
-  // Build URLs directly into hrefs (no onClick/window.open) to avoid iframe/modal issues.
-  const buyNowUrl =
-    shoppingUrl && shoppingUrl.startsWith("http")
-      ? shoppingUrl
-      : `https://www.google.com/search?q=${encodeURIComponent(name)}&tbm=shop`;
-
-  const findSimilarUrl = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(
-    `${name} interior design discovery`
+  // 1. Construct the Search URL (Fail-safe)
+  const googleImageSearchUrl = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(
+    `${name || "modern furniture"} interior design`
   )}`;
 
+  // 2. Ensure Shopping URL is valid
+  const finalShoppingUrl =
+    shoppingUrl && shoppingUrl.startsWith("http")
+      ? shoppingUrl
+      : `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(name)}`;
+
   return (
-    <div className="flex flex-col h-[500px] w-full bg-card rounded-3xl overflow-hidden shadow-lg border border-border hover:shadow-xl transition-all duration-300 group">
-      {/* 1. IMAGE SECTION (Fixed Height - 55%) */}
-      <div className="relative h-[55%] w-full overflow-hidden bg-muted">
+    <div className="flex flex-col h-full bg-card rounded-2xl overflow-hidden shadow-sm border border-border hover:shadow-md transition-shadow duration-200">
+      {/* IMAGE HEADER */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
         <img
           src={imageUrl}
           alt={name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="w-full h-full object-cover"
           onError={(e) => {
             (e.target as HTMLImageElement).src =
-              "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80";
+              "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80";
           }}
         />
-        {/* Price Tag Overlay */}
-        <div className="absolute bottom-4 right-4 bg-foreground/70 backdrop-blur-md text-background px-3 py-1 rounded-full text-sm font-semibold">
-          {price || "Check Price"}
-        </div>
+
+        {/* Price Tag Badge */}
+        {price && (
+          <div className="absolute bottom-3 right-3 bg-foreground/80 backdrop-blur-sm text-background text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+            {price}
+          </div>
+        )}
       </div>
 
-      {/* 2. CONTENT SECTION (Remaining Height) */}
-      <div className="flex flex-col flex-1 p-6">
-        {/* Text Area */}
-        <div className="flex-1">
-          <h3 className="text-xl font-serif font-bold text-foreground leading-tight line-clamp-2 mb-2">
-            {name || "Unknown Item"}
-          </h3>
-          <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
-            {reasoning || "Matches your uploaded style perfectly."}
-          </p>
-        </div>
+      {/* TEXT CONTENT */}
+      <div className="flex flex-col flex-1 p-5">
+        <h3 className="font-serif text-lg font-medium text-foreground leading-snug line-clamp-2 mb-2">
+          {name || "Stylish Furniture Item"}
+        </h3>
 
-        {/* 3. ACTIONS (Fixed at Bottom) */}
-        <div className="flex gap-3 mt-4 pt-4 border-t border-border">
-          {/* Find Similar */}
+        <p className="text-sm text-muted-foreground line-clamp-3 mb-4 leading-relaxed">
+          {reasoning || "Selected based on your room's style and color palette."}
+        </p>
+
+        {/* BUTTONS - PURE <a> TAGS */}
+        <div className="mt-auto flex gap-3 pt-2">
+          {/* Find Similar Link */}
           <a
-            href={findSimilarUrl}
+            href={googleImageSearchUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 px-4 py-3 bg-card border border-border text-foreground rounded-xl text-sm font-medium hover:bg-accent transition-colors inline-flex items-center justify-center gap-2 no-underline"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-card border border-border text-foreground text-sm font-medium rounded-xl hover:bg-accent transition-colors no-underline"
           >
             <Search className="w-4 h-4" />
-            <span className="hidden sm:inline">Find Similar</span>
-            <span className="sm:hidden">Similar</span>
+            <span>Similar</span>
           </a>
 
-          {/* Buy Now */}
+          {/* Buy Now Link */}
           <a
-            href={buyNowUrl}
+            href={finalShoppingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-[1.5] px-4 py-3 bg-foreground text-background rounded-xl text-sm font-medium hover:bg-foreground/90 transition-colors inline-flex items-center justify-center gap-2 shadow-sm no-underline"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-foreground text-background text-sm font-medium rounded-xl hover:bg-foreground/90 transition-colors shadow-sm no-underline"
           >
             <ShoppingCart className="w-4 h-4" />
-            Buy Now
+            <span>Buy</span>
           </a>
         </div>
       </div>
     </div>
   );
 };
-
