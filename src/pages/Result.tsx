@@ -1,4 +1,4 @@
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, Link, useLocation } from "react-router-dom";
 import { ArrowLeft, Home } from "lucide-react";
 import { ResultCard } from "@/components/ResultCard";
 
@@ -497,9 +497,17 @@ const defaultDemo = {
 
 export default function Result() {
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const isDemo = searchParams.get("demo") === "true";
   const styleId = searchParams.get("style") || "";
-  const demoImage = searchParams.get("demoImage") || "";
+  
+  // Unified image display logic:
+  // Priority 1: Image uploaded by user (location.state.image)
+  // Priority 2: Demo image passed from trending styles (searchParams.get('demoImage'))
+  // Fallback: A default placeholder
+  const displayImage = location.state?.image 
+    || decodeURIComponent(searchParams.get('demoImage') || '') 
+    || "https://placehold.co/800x600/e0e0e0/ffffff?text=No+Image+Selected";
 
   // Get demo data for the selected style
   const demoData = demoResultsByStyle[styleId] || defaultDemo;
@@ -564,25 +572,23 @@ export default function Result() {
         {/* Two-Column Layout: Reference Image + Results */}
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left: Reference Image (sticky on desktop) */}
-          {demoImage && (
-            <div className="lg:w-1/3 lg:flex-shrink-0">
-              <div className="lg:sticky lg:top-24">
-                <div className="rounded-2xl overflow-hidden border border-border shadow-sm">
-                  <img 
-                    src={decodeURIComponent(demoImage)} 
-                    alt={`${demoData.styleName} reference`}
-                    className="w-full aspect-[4/3] object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "https://placehold.co/800x600/e0e0e0/999999?text=Reference+Image";
-                    }}
-                  />
-                </div>
-                <p className="text-sm text-muted-foreground mt-3 text-center">
-                  Your style inspiration
-                </p>
+          <div className="lg:w-1/3 lg:flex-shrink-0">
+            <div className="lg:sticky lg:top-24">
+              <div className="rounded-2xl overflow-hidden border border-border shadow-sm bg-muted">
+                <img 
+                  src={displayImage} 
+                  alt="Room Analysis"
+                  className="w-full aspect-[4/3] object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "https://placehold.co/800x600/e0e0e0/ffffff?text=Image+Unavailable";
+                  }}
+                />
               </div>
+              <p className="text-sm text-muted-foreground mt-3 text-center">
+                Your style inspiration
+              </p>
             </div>
-          )}
+          </div>
 
           {/* Right: Results Grid */}
           <div className="flex-1">
