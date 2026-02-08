@@ -10,8 +10,8 @@ const featuredStyles = [
   {
     id: "modern-farmhouse-kitchen",
     title: "Modern Farmhouse Kitchen",
-    // Stable Image: Empty white kitchen - no people
-    imageUrl: "https://images.unsplash.com/photo-1556910103-1c02745a30bf?auto=format&fit=crop&w=800&q=80",
+    // Stable Image: Classic white farmhouse kitchen (Verified)
+    imageUrl: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "japandi-bathroom",
