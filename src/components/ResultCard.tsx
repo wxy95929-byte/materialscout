@@ -22,11 +22,17 @@ export const ResultCard = ({
     `${name || "modern furniture"} interior design`
   )}`;
 
-  // 2. Ensure Shopping URL is valid
-  const finalShoppingUrl =
+  // 2. Sanitize Shopping URL - ensure it starts with http/https
+  const safeLink =
     shoppingUrl && shoppingUrl.startsWith("http")
       ? shoppingUrl
-      : `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(name)}`;
+      : shoppingUrl
+      ? `https://${shoppingUrl}`
+      : null;
+
+  // 3. Final URL - fallback to Google Shopping if no valid link
+  const finalShoppingUrl =
+    safeLink || `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(name)}`;
 
   return (
     <div className="flex flex-col h-full bg-card rounded-2xl overflow-hidden shadow-sm border border-border hover:shadow-md transition-shadow duration-200">
@@ -58,6 +64,11 @@ export const ResultCard = ({
 
         <p className="text-sm text-muted-foreground line-clamp-3 mb-4 leading-relaxed">
           {reasoning || "Selected based on your room's style and color palette."}
+        </p>
+
+        {/* DEBUG: Show raw URL */}
+        <p className="text-xs text-red-600 break-all font-mono bg-yellow-100 p-2 border border-red-300 my-2">
+          DEBUG LINK: {shoppingUrl || "NULL"}
         </p>
 
         {/* BUTTONS - PURE <a> TAGS */}
