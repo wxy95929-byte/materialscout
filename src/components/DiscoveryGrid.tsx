@@ -43,8 +43,9 @@ export function DiscoveryGrid({ onCardClick }: DiscoveryGridProps) {
   const navigate = useNavigate();
 
   const handleCardClick = (styleId: string, imageUrl: string) => {
-    // Navigate to demo results page with the style image as reference
-    navigate(`/result?demo=true&style=${styleId}&refImage=${encodeURIComponent(imageUrl)}`);
+    // Encode the image URL to ensure it passes correctly in the query params
+    const encodedImage = encodeURIComponent(imageUrl);
+    navigate(`/result?demo=true&style=${styleId}&demoImage=${encodedImage}`);
   };
 
   return (
