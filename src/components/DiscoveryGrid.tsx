@@ -5,37 +5,43 @@ interface DiscoveryGridProps {
   onCardClick?: (style: string) => void;
 }
 
-// Featured styles with stable Unsplash search URLs - pure interior shots without people
+// Featured styles with stable Unsplash image IDs - pure interior shots without people
 const featuredStyles = [
   {
-    id: "modern-farmhouse",
+    id: "modern-farmhouse-kitchen",
     title: "Modern Farmhouse Kitchen",
-    imageUrl: "https://source.unsplash.com/800x600/?modern,farmhouse,kitchen,interior,nopeople",
+    // Stable Image: White farmhouse kitchen with wood accents
+    imageUrl: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "japandi-bathroom",
     title: "Japandi Bathroom Oasis",
-    imageUrl: "https://source.unsplash.com/800x600/?japandi,bathroom,zen,minimal,interior",
+    // Stable Image: Minimalist beige bathroom with bathtub
+    imageUrl: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=800&q=80",
   },
   {
-    id: "industrial-loft",
+    id: "industrial-loft-living",
     title: "Industrial Loft Living",
-    imageUrl: "https://source.unsplash.com/800x600/?industrial,loft,living,room,brick,concrete,interior",
+    // Stable Image: Brick wall living room with leather sofa
+    imageUrl: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80",
   },
   {
-    id: "coastal-dining",
+    id: "coastal-dining-room",
     title: "Coastal Chic Dining",
-    imageUrl: "https://source.unsplash.com/800x600/?coastal,dining,room,breezy,interior,nopeople",
+    // Stable Image: Bright dining room with woven chairs
+    imageUrl: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80",
   },
   {
-    id: "mid-century",
+    id: "mid-century-bedroom",
     title: "Mid-Century Modern Bedroom",
-    imageUrl: "https://source.unsplash.com/800x600/?mid-century,modern,bedroom,interior,retro",
+    // Stable Image: Walnut bedframe with mid-century styling
+    imageUrl: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=800&q=80",
   },
   {
-    id: "boho-bedroom",
+    id: "boho-patio",
     title: "Bohemian Outdoor Sanctuary",
-    imageUrl: "https://source.unsplash.com/800x600/?boho,patio,outdoor,cozy,plants,nopeople",
+    // Stable Image: Cozy patio with plants (no people)
+    imageUrl: "https://images.unsplash.com/photo-1563298723-dcfebaa392e3?auto=format&fit=crop&w=800&q=80",
   },
 ];
 
