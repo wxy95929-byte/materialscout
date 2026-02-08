@@ -43,8 +43,9 @@ export const ResultCard = ({
           alt={name}
           className="w-full h-full object-cover"
           onError={(e) => {
+            // Use a reliable, neutral grey placeholder image
             (e.target as HTMLImageElement).src =
-              "https://images.unsplash.com/photo-1628191011993-43508d53bb52?auto=format&fit=crop&w=800&q=80";
+              "https://placehold.co/800x600/e0e0e0/999999?text=Image+Unavailable";
           }}
         />
 
