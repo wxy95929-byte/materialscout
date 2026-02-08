@@ -44,7 +44,7 @@ export const ResultCard = ({
           className="w-full h-full object-cover"
           onError={(e) => {
             (e.target as HTMLImageElement).src =
-              "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80";
+              "https://images.unsplash.com/photo-1628191011993-43508d53bb52?auto=format&fit=crop&w=800&q=80";
           }}
         />
 
