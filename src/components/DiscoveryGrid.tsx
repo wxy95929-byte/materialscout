@@ -5,56 +5,46 @@ interface DiscoveryGridProps {
   onCardClick?: (style: string) => void;
 }
 
-// Featured styles with curated Unsplash images - specifically interior design shots
+// Featured styles with stable Unsplash search URLs - pure interior shots without people
 const featuredStyles = [
   {
     id: "modern-farmhouse",
     title: "Modern Farmhouse Kitchen",
-    imageUrl: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=800",
+    imageUrl: "https://source.unsplash.com/800x600/?modern,farmhouse,kitchen,interior,nopeople",
   },
   {
     id: "japandi-bathroom",
-    title: "Japandi Bathroom",
-    imageUrl: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=800",
+    title: "Japandi Bathroom Oasis",
+    imageUrl: "https://source.unsplash.com/800x600/?japandi,bathroom,zen,minimal,interior",
   },
   {
     id: "industrial-loft",
-    title: "Industrial Loft Living Room",
-    imageUrl: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800",
-  },
-  {
-    id: "boho-bedroom",
-    title: "Bohemian Bedroom",
-    imageUrl: "https://images.unsplash.com/photo-1617325247661-675ab4b64ae2?auto=format&fit=crop&w=800",
-  },
-  {
-    id: "scandinavian-living",
-    title: "Scandinavian Living Room",
-    imageUrl: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800",
+    title: "Industrial Loft Living",
+    imageUrl: "https://source.unsplash.com/800x600/?industrial,loft,living,room,brick,concrete,interior",
   },
   {
     id: "coastal-dining",
-    title: "Coastal Dining Room",
-    imageUrl: "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=800",
+    title: "Coastal Chic Dining",
+    imageUrl: "https://source.unsplash.com/800x600/?coastal,dining,room,breezy,interior,nopeople",
   },
   {
     id: "mid-century",
-    title: "Mid-Century Modern",
-    imageUrl: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800",
+    title: "Mid-Century Modern Bedroom",
+    imageUrl: "https://source.unsplash.com/800x600/?mid-century,modern,bedroom,interior,retro",
   },
   {
-    id: "minimalist-office",
-    title: "Minimalist Home Office",
-    imageUrl: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800",
+    id: "boho-bedroom",
+    title: "Bohemian Outdoor Sanctuary",
+    imageUrl: "https://source.unsplash.com/800x600/?boho,patio,outdoor,cozy,plants,nopeople",
   },
 ];
 
 export function DiscoveryGrid({ onCardClick }: DiscoveryGridProps) {
   const navigate = useNavigate();
 
-  const handleCardClick = (styleId: string, styleTitle: string) => {
-    // Navigate to demo results page
-    navigate(`/result?demo=true&style=${styleId}`);
+  const handleCardClick = (styleId: string, imageUrl: string) => {
+    // Navigate to demo results page with the style image as reference
+    navigate(`/result?demo=true&style=${styleId}&refImage=${encodeURIComponent(imageUrl)}`);
   };
 
   return (
@@ -75,7 +65,7 @@ export function DiscoveryGrid({ onCardClick }: DiscoveryGridProps) {
             title={style.title}
             imageUrl={style.imageUrl}
             index={index}
-            onClick={() => handleCardClick(style.id, style.title)}
+            onClick={() => handleCardClick(style.id, style.imageUrl)}
           />
         ))}
       </div>
