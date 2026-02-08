@@ -42,7 +42,29 @@ serve(async (req) => {
   }
 
   try {
-    const { imageBase64 } = await req.json();
+    const { imageBase64, budget = "standard" } = await req.json();
+
+    // Map budget to search modifiers
+    const budgetConfig: Record<string, { keywords: string; brands: string; priceSort: string }> = {
+      economy: {
+        keywords: "affordable budget-friendly under $500",
+        brands: "Target, IKEA, Wayfair, Amazon Basics, H&M Home",
+        priceSort: "p_ord:p", // Sort by price: low to high
+      },
+      standard: {
+        keywords: "",
+        brands: "West Elm, CB2, Article, Crate & Barrel",
+        priceSort: "",
+      },
+      luxury: {
+        keywords: "high-end designer premium luxury Italian",
+        brands: "Restoration Hardware, Arhaus, Pottery Barn, Design Within Reach, Roche Bobois",
+        priceSort: "p_ord:pd", // Sort by price: high to low
+      },
+    };
+
+    const selectedBudget = budgetConfig[budget.toLowerCase()] || budgetConfig.standard;
+    console.log("Budget selected:", budget, "Config:", selectedBudget);
 
     if (!imageBase64) {
       return new Response(
@@ -84,16 +106,21 @@ serve(async (req) => {
 
     const geminiPrompt = `Analyze this room image. Identify the 3 most prominent furniture items or decor pieces that users would want to purchase.
 
+USER BUDGET: ${budget.toUpperCase()}
+- If ECONOMY: Target affordable options from brands like ${selectedBudget.brands}. Use terms like "affordable", "budget", "value" in queries.
+- If STANDARD: Target mid-range options from brands like ${selectedBudget.brands}.
+- If LUXURY: Target high-end designer options from brands like ${selectedBudget.brands}. Use terms like "designer", "luxury", "premium" in queries.
+
 CRITICAL: Generate LONG-TAIL VISUAL QUERIES with specific details:
 - Do NOT just say "Sofa" or "Lamp"
 - You MUST include the exact COLOR, MATERIAL, and SHAPE visible in the image
-- Example: Instead of "Modern Sofa", generate "curved white boucle sofa"
-- Example: Instead of "Lamp", generate "white mushroom table lamp ceramic"
-- Example: Instead of "Coffee Table", generate "round natural oak wood coffee table"
+- IMPORTANT: Add budget-appropriate brand names or price-tier keywords to each query
+- Example for ECONOMY: "affordable curved white fabric sofa IKEA style"
+- Example for LUXURY: "designer curved white boucle sofa luxury"
 
 For each item, provide:
 1. item_name: A short descriptive name with the primary color (e.g., "White Curved Sofa", "Oak Coffee Table")
-2. shopping_query: A HIGHLY SPECIFIC Google Shopping query with COLOR + MATERIAL + SHAPE (e.g., "curved white boucle fabric sofa", "round light oak wood coffee table minimalist")
+2. shopping_query: A HIGHLY SPECIFIC Google Shopping query with COLOR + MATERIAL + SHAPE + BUDGET KEYWORDS (e.g., "affordable curved white fabric sofa" for economy, "luxury designer curved white boucle sofa" for luxury)
 3. reasoning: Why this item stands out and would be desirable
 
 Return ONLY a raw JSON array. Do not use Markdown formatting or code blocks.
@@ -102,7 +129,7 @@ Example format:
 [
   {
     "item_name": "White Curved Sofa",
-    "shopping_query": "curved white boucle fabric sofa modern",
+    "shopping_query": "curved white boucle fabric sofa ${selectedBudget.keywords}",
     "reasoning": "The organic curved shape and textured white boucle fabric creates a stunning focal point"
   }
 ]
@@ -188,7 +215,24 @@ Return ONLY the JSON array, nothing else.`;
 
     for (const item of geminiItems) {
       try {
-        console.log(`Searching for: "${item.shopping_query}"`);
+        // Append budget keywords to the search query
+        const budgetEnhancedQuery = selectedBudget.keywords
+          ? `${item.shopping_query} ${selectedBudget.keywords}`
+          : item.shopping_query;
+        
+        console.log(`Searching for: "${budgetEnhancedQuery}" (Budget: ${budget})`);
+
+        // Build Serper request with optional price sorting
+        const serperBody: Record<string, string> = {
+          q: budgetEnhancedQuery,
+          gl: "us",
+          hl: "en",
+        };
+
+        // Add price sorting parameter if available
+        if (selectedBudget.priceSort) {
+          serperBody.tbs = selectedBudget.priceSort;
+        }
 
         const serperResponse = await fetch("https://google.serper.dev/shopping", {
           method: "POST",
@@ -196,11 +240,7 @@ Return ONLY the JSON array, nothing else.`;
             "X-API-KEY": SERPER_API_KEY,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            q: item.shopping_query,
-            gl: "us",
-            hl: "en",
-          }),
+          body: JSON.stringify(serperBody),
         });
 
         if (!serperResponse.ok) {
