@@ -7,6 +7,7 @@ type MoodItem = {
   name: string;
   reasoning: string;
   imageUrl: string;
+  pinUrl?: string;
 };
 
 type MoodBoard = {
