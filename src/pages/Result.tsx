@@ -36,7 +36,7 @@ const MOOD_BOARDS: Record<string, MoodBoard> = {
     items: [
       { id: "1", name: "Exposed Brick", reasoning: "The signature of industrial lofts.", imageUrl: "/images/exposed-brick.jpeg" },
       { id: "2", name: "Distressed Leather", reasoning: "Timeless and durable seating material.", imageUrl: "/images/distressed-leather.png" },
-      { id: "3", name: "Concrete Surfaces", reasoning: "Cool grey tones for a modern edge.", imageUrl: "https://images.unsplash.com/photo-1516644243610-858348633324?auto=format&fit=crop&w=800&q=80" },
+      { id: "3", name: "Concrete Surfaces", reasoning: "Cool grey tones for a modern edge.", imageUrl: "/images/concrete-surfaces.jpeg" },
     ],
   },
   "coastal-dining-room": {
