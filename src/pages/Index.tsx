@@ -18,7 +18,7 @@ const TRENDING_STYLES = [
     id: "japandi-bathroom",
     name: "Japandi Bathroom Oasis",
     image:
-      "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=800&q=80",
+      "/images/japandi-bathroom-hero.jpeg",
     description: "Minimalist fusion of Scandinavian and Japanese design.",
   },
   {
