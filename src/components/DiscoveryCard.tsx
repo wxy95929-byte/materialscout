@@ -12,12 +12,12 @@ export function DiscoveryCard({ title, imageUrl, index, onClick }: DiscoveryCard
       style={{ animationDelay: `${index * 0.05}s` }}
       onClick={onClick}
     >
-      <div className="relative rounded-3xl overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
+      <div className="relative rounded-3xl overflow-hidden transition-transform duration-300 hover:scale-[1.02] h-full">
         {/* Image */}
         <img
           src={imageUrl}
           alt={title}
-          className="w-full object-cover transition-all duration-300 group-hover:brightness-90"
+          className="w-full h-64 object-cover transition-all duration-300 group-hover:brightness-90"
         />
         
         {/* Title Overlay */}

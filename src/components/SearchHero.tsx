@@ -1,4 +1,4 @@
-import { Camera, Search } from "lucide-react";
+import { Camera } from "lucide-react";
 
 interface SearchHeroProps {
   onCameraClick: () => void;
