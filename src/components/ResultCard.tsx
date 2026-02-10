@@ -6,6 +6,7 @@ interface ResultCardProps {
   name: string;
   reasoning: string;
   imageUrl: string;
+  pinUrl?: string;
 }
 
 export const ResultCard = ({
