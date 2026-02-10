@@ -20,7 +20,7 @@ const MOOD_BOARDS: Record<string, MoodBoard> = {
     items: [
       { id: "1", name: "White Shiplap Texture", reasoning: "The foundation of farmhouse style.", imageUrl: "/images/white-shiplap.jpeg" },
       { id: "2", name: "Matte Black Hardware", reasoning: "Modern contrast against white cabinets.", imageUrl: "/images/matte-black-hardware.png" },
-      { id: "3", name: "Natural Oak Details", reasoning: "Brings warmth to the clean palette.", imageUrl: "https://images.unsplash.com/photo-1506898667547-42e22a46e127?auto=format&fit=crop&w=800&q=80" },
+      { id: "3", name: "Natural Oak Details", reasoning: "Brings warmth to the clean palette.", imageUrl: "/images/natural-oak.png" },
     ],
   },
   "japandi-bathroom": {
