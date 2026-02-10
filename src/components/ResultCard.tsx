@@ -1,5 +1,5 @@
 import React from "react";
-import { Compass } from "lucide-react";
+import { MapPin } from "lucide-react";
 
 interface ResultCardProps {
   id: string;
@@ -13,8 +13,8 @@ export const ResultCard = ({
   reasoning,
   imageUrl,
 }: ResultCardProps) => {
-  const exploreUrl = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(
-    `${name || "interior design"} aesthetic inspiration`
+  const exploreUrl = `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(
+    `${name || "interior design"} interior design style`
   )}`;
 
   return (
@@ -46,10 +46,10 @@ export const ResultCard = ({
           href={exploreUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-accent text-foreground text-sm font-medium rounded-xl hover:bg-accent/80 transition-colors no-underline"
+          className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#E60023] text-white text-sm font-medium rounded-xl hover:bg-[#ad081b] transition-colors no-underline"
         >
-          <Compass className="w-4 h-4" />
-          <span>Explore Style</span>
+          <MapPin className="w-4 h-4" />
+          <span>Pin Inspiration</span>
         </a>
       </div>
     </div>
