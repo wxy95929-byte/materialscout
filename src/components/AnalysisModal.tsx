@@ -283,10 +283,10 @@ export function AnalysisModal({ isOpen, onClose }: AnalysisModalProps) {
 
             <div className="flex items-baseline justify-between mb-6 pt-8">
               <h2 className="font-serif text-2xl text-foreground">
-                Discover Materials
+                Style Inspiration
               </h2>
               <span className="text-sm text-muted-foreground">
-                {data.length} items found
+                {data.length} vibes found
               </span>
             </div>
 
@@ -298,20 +298,9 @@ export function AnalysisModal({ isOpen, onClose }: AnalysisModalProps) {
                   id={String(index)}
                   name={product.product_title}
                   reasoning={product.reasoning}
-                  price={product.estimated_price}
                   imageUrl={product.product_image}
-                  shoppingUrl={product.product_url}
                 />
               ))}
-            </div>
-
-            {/* Total */}
-            <div className="flex items-center justify-between py-6 border-t border-border">
-              <div>
-                <p className="font-semibold text-lg text-foreground">Estimated Total</p>
-                <p className="text-sm text-muted-foreground">excl. labor</p>
-              </div>
-              <p className="font-serif text-3xl text-foreground">{total}</p>
             </div>
           </div>
         )}
