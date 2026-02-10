@@ -32,7 +32,7 @@ const TRENDING_STYLES = [
     id: "coastal-dining-room",
     name: "Coastal Chic Dining",
     image:
-      "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80",
+      "/images/coastal-dining-hero.jpeg",
     description: "Light, breezy, and inspired by the sea.",
   },
   {
