@@ -44,7 +44,7 @@ const MOOD_BOARDS: Record<string, MoodBoard> = {
     styleName: "Coastal Chic Dining",
     items: [
       { id: "1", name: "Driftwood Finishes", reasoning: "Weathered wood evokes the beach.", imageUrl: "/images/driftwood-finishes.jpeg", pinUrl: "https://www.pinterest.com/search/pins/?q=Driftwood%20Finishes%20dinning%20design%20style&rs=typed" },
-      { id: "2", name: "Sea Glass Blue", reasoning: "A pop of color from the ocean.", imageUrl: "https://images.unsplash.com/photo-1502672023488-70e25813eb80?auto=format&fit=crop&w=800&q=80" },
+      { id: "2", name: "Sea Glass Blue", reasoning: "A pop of color from the ocean.", imageUrl: "/images/sea-glass-blue.jpeg", pinUrl: "https://www.pinterest.com/search/pins/?q=Sea%20Glass%20Blue%20dinning%20design%20style&rs=typed" },
       { id: "3", name: "Sandy Beige Linen", reasoning: "Neutral backdrop like the shore.", imageUrl: "https://images.unsplash.com/photo-1579762593175-20226054f195?auto=format&fit=crop&w=800&q=80" },
     ],
   },
