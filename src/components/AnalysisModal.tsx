@@ -180,36 +180,77 @@ export function AnalysisModal({ isOpen, onClose }: AnalysisModalProps) {
       <div className="max-w-4xl mx-auto px-4 lg:px-8 py-8">
         {/* Step 1: Upload */}
         {step === "upload" && (
-          <label
-            className={`flex flex-col items-center justify-center w-full min-h-[60vh] cursor-pointer transition-all rounded-3xl border-2 border-dashed ${
-              dragActive ? "border-foreground bg-accent" : "border-border hover:border-foreground/50"
-            }`}
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-          >
-            <div className="flex flex-col items-center text-center p-8">
-              <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-6">
-                <Upload className="w-8 h-8 text-muted-foreground" />
+          <div className="space-y-8">
+            <label
+              className={`flex flex-col items-center justify-center w-full min-h-[50vh] cursor-pointer transition-all rounded-3xl border-2 border-dashed bg-gray-50 ${
+                dragActive ? "border-foreground bg-accent" : "border-gray-300 hover:border-foreground/50"
+              }`}
+              onDragEnter={handleDrag}
+              onDragLeave={handleDrag}
+              onDragOver={handleDrag}
+              onDrop={handleDrop}
+            >
+              <div className="flex flex-col items-center text-center p-8">
+                <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-6">
+                  <Upload className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <h3 className="font-serif text-2xl text-foreground mb-2">
+                  Analyze Your Space
+                </h3>
+                <p className="text-muted-foreground font-light mb-4 max-w-sm">
+                  Upload a photo of your room to extract textures, colors, and design vibes.
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  JPEG, PNG, WebP, or GIF • Max 5MB
+                </p>
               </div>
-              <h3 className="font-serif text-2xl text-foreground mb-2">
-                Drop your inspiration here
-              </h3>
-              <p className="text-muted-foreground font-light mb-4">
-                or click to browse
-              </p>
-              <p className="text-xs text-muted-foreground">
-                JPEG, PNG, WebP, or GIF • Max 5MB
-              </p>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleInputChange}
+                className="hidden"
+              />
+            </label>
+
+            {/* Quick Demo Section */}
+            <div className="text-center space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="flex-1 h-px bg-border" />
+                <span className="text-sm text-muted-foreground">No photo handy? Try one of ours:</span>
+                <div className="flex-1 h-px bg-border" />
+              </div>
+              <div className="flex justify-center gap-4">
+                {[
+                  { label: "Living Room", url: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=150&q=80" },
+                  { label: "Kitchen", url: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=150&q=80" },
+                  { label: "Bedroom", url: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=150&q=80" },
+                ].map((demo) => (
+                  <button
+                    key={demo.label}
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const res = await fetch(demo.url);
+                        const blob = await res.blob();
+                        const file = new File([blob], `${demo.label.toLowerCase().replace(" ", "-")}.jpg`, { type: "image/jpeg" });
+                        handleFile(file);
+                      } catch {
+                        toast.error("Failed to load demo image");
+                      }
+                    }}
+                    className="flex flex-col items-center gap-2 group"
+                  >
+                    <img
+                      src={demo.url}
+                      alt={demo.label}
+                      className="w-20 h-20 rounded-xl object-cover border-2 border-transparent group-hover:border-foreground transition-all shadow-sm group-hover:shadow-md"
+                    />
+                    <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">{demo.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleInputChange}
-              className="hidden"
-            />
-          </label>
+          </div>
         )}
 
         {/* Step 2: Configure */}
