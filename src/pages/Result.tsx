@@ -26,7 +26,7 @@ const MOOD_BOARDS: Record<string, MoodBoard> = {
   "japandi-bathroom": {
     styleName: "Japandi Bathroom Oasis",
     items: [
-      { id: "1", name: "Stone Textures", reasoning: "Natural elements for a zen spa feel.", imageUrl: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=800&q=80" },
+      { id: "1", name: "Stone Textures", reasoning: "Natural elements for a zen spa feel.", imageUrl: "/images/stone-bathroom.jpeg" },
       { id: "2", name: "Warm Bamboo", reasoning: "Sustainable wood accents.", imageUrl: "/images/warm-bamboo.jpeg" },
       { id: "3", name: "Minimalist Ceramics", reasoning: "Clean lines and function.", imageUrl: "/images/minimalist-ceramics.jpg" },
     ],
