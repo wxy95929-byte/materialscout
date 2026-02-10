@@ -28,7 +28,7 @@ const MOOD_BOARDS: Record<string, MoodBoard> = {
     items: [
       { id: "1", name: "Stone Textures", reasoning: "Natural elements for a zen spa feel.", imageUrl: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=800&q=80" },
       { id: "2", name: "Warm Bamboo", reasoning: "Sustainable wood accents.", imageUrl: "https://images.unsplash.com/photo-1533090368676-1fd25485db88?auto=format&fit=crop&w=800&q=80" },
-      { id: "3", name: "Minimalist Ceramics", reasoning: "Clean lines and function.", imageUrl: "https://images.unsplash.com/photo-1581539250439-c96689b516dd?auto=format&fit=crop&w=800&q=80" },
+      { id: "3", name: "Minimalist Ceramics", reasoning: "Clean lines and function.", imageUrl: "/images/minimalist-ceramics.jpg" },
     ],
   },
   "industrial-loft-living": {
