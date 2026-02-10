@@ -171,6 +171,7 @@ export default function Result() {
                   name={item.name}
                   reasoning={item.reasoning}
                   imageUrl={item.imageUrl}
+                  pinUrl={item.pinUrl}
                 />
               ))}
             </div>
