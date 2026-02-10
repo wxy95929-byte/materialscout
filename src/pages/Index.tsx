@@ -1,9 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { SearchHero } from "@/components/SearchHero";
-import { DiscoveryGrid } from "@/components/DiscoveryGrid";
 import { AnalysisModal } from "@/components/AnalysisModal";
-import { toast } from "sonner";
 
 const TRENDING_STYLES = [
   {
