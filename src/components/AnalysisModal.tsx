@@ -221,9 +221,9 @@ export function AnalysisModal({ isOpen, onClose }: AnalysisModalProps) {
               </div>
               <div className="flex justify-center gap-4">
                 {[
-                  { label: "Living Room", url: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=150&q=80" },
-                  { label: "Kitchen", url: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=150&q=80" },
-                  { label: "Bedroom", url: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=150&q=80" },
+                  { label: "Living Room", url: "/images/demo-living-room.jpg" },
+                  { label: "Kitchen", url: "/images/demo-kitchen.jpg" },
+                  { label: "Bedroom", url: "/images/demo-bedroom.jpg" },
                 ].map((demo) => (
                   <button
                     key={demo.label}
