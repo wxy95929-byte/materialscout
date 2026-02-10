@@ -13,8 +13,8 @@ export const ResultCard = ({
   reasoning,
   imageUrl,
 }: ResultCardProps) => {
-  const exploreUrl = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(
-    `${name || "interior design"} aesthetic inspiration`
+  const exploreUrl = `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(
+    `${name || "interior design"} interior design style`
   )}`;
 
   return (
