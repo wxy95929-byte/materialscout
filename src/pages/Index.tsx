@@ -53,25 +53,51 @@ const TRENDING_STYLES = [
 
 const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleCardClick = (style: string) => {
-    toast.info(`Exploring "${style}"`, {
-      description: "Upload your own photo to get personalized recommendations",
-      action: {
-        label: "Upload",
-        onClick: () => setIsModalOpen(true),
-      },
-    });
-  };
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background">
       {/* Search Hero */}
       <SearchHero onCameraClick={() => setIsModalOpen(true)} />
 
-      {/* Discovery Grid */}
-      <DiscoveryGrid styles={[...TRENDING_STYLES]} onCardClick={handleCardClick} />
-
+      {/* Trending Styles Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-serif font-bold text-gray-900">Trending Styles</h2>
+            <p className="mt-4 text-lg text-gray-600">Explore curated renovations for inspiration</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {TRENDING_STYLES.map((style) => (
+              <div
+                key={style.id}
+                onClick={() => {
+                  const encodedImage = encodeURIComponent(style.image);
+                  navigate(`/result?demo=true&style=${style.id}&demoImage=${encodedImage}`);
+                }}
+                className="group cursor-pointer bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden border border-gray-100"
+              >
+                <div className="relative h-64 w-full overflow-hidden">
+                  <img
+                    src={style.image}
+                    alt={style.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-300" />
+                </div>
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                    {style.name}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed text-sm line-clamp-2">
+                    {style.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* FAB - Create New Project */}
       <button
@@ -83,9 +109,9 @@ const Index = () => {
       </button>
 
       {/* Analysis Modal */}
-      <AnalysisModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <AnalysisModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
       />
     </div>
   );
