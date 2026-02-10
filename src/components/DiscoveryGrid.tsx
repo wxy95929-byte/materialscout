@@ -24,7 +24,7 @@ export function DiscoveryGrid({ styles }: DiscoveryGridProps) {
   return (
     <div className="px-4 lg:px-8 pb-24">
       {/* Section Header */}
-      <div className="max-w-7xl mx-auto mb-6">
+      <div className="max-w-7xl mx-auto w-full mb-6">
         <h2 className="font-serif text-2xl text-foreground">Trending Styles</h2>
         <p className="text-muted-foreground text-sm mt-1">
           Explore curated renovations for inspiration
