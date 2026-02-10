@@ -11,7 +11,7 @@ const TRENDING_STYLES = [
     name: "Modern Farmhouse Kitchen",
     // FIXED: Clean white kitchen, NO PEOPLE
     image:
-      "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80",
+      "/images/farmhouse-kitchen-hero.jpeg",
     description: "Rustic charm meets contemporary clean lines.",
   },
   {
