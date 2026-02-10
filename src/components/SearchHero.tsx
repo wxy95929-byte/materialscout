@@ -1,4 +1,4 @@
-import { Camera, Search } from "lucide-react";
+import { Camera } from "lucide-react";
 
 interface SearchHeroProps {
   onCameraClick: () => void;
@@ -18,22 +18,15 @@ export function SearchHero({ onCameraClick }: SearchHeroProps) {
 
         {/* Search Bar */}
         <div className="relative group">
-          <div className="flex items-center bg-card border border-border rounded-full px-6 py-4 shadow-sm hover:shadow-md transition-shadow">
-            <Search className="w-5 h-5 text-muted-foreground mr-3 flex-shrink-0" />
-            <input
-              type="text"
-              placeholder="What's your dream room vibe?"
-              className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-base"
-              readOnly
-            />
-            <button
-              onClick={onCameraClick}
-              className="flex-shrink-0 w-10 h-10 -mr-2 rounded-full bg-foreground hover:bg-foreground/90 text-background flex items-center justify-center transition-all hover:scale-105"
-              title="Upload inspiration photo"
-            >
-              <Camera className="w-5 h-5" />
-            </button>
-          </div>
+        <button
+            onClick={onCameraClick}
+            className="flex items-center w-full bg-card border border-border rounded-full px-6 py-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+          >
+            <Camera className="w-5 h-5 text-muted-foreground mr-3 flex-shrink-0" />
+            <span className="flex-1 text-left text-muted-foreground text-base">
+              Tap here to upload a room photo...
+            </span>
+          </button>
         </div>
 
         {/* Subtext */}
