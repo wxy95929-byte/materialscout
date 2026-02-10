@@ -6,14 +6,16 @@ interface ResultCardProps {
   name: string;
   reasoning: string;
   imageUrl: string;
+  pinUrl?: string;
 }
 
 export const ResultCard = ({
   name,
   reasoning,
   imageUrl,
+  pinUrl,
 }: ResultCardProps) => {
-  const exploreUrl = `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(
+  const exploreUrl = pinUrl || `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(
     `${name || "interior design"} interior design style`
   )}`;
 
