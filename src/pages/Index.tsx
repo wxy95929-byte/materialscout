@@ -25,7 +25,7 @@ const TRENDING_STYLES = [
     id: "industrial-loft-living",
     name: "Industrial Loft Living",
     image:
-      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80",
+      "/images/industrial-loft-hero.png",
     description: "Raw materials, exposed elements, and open spaces.",
   },
   {
