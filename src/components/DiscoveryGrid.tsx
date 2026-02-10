@@ -32,7 +32,7 @@ export function DiscoveryGrid({ styles }: DiscoveryGridProps) {
       </div>
 
       {/* Masonry Grid */}
-      <div className="max-w-7xl mx-auto columns-2 lg:columns-3 xl:columns-4 gap-4">
+      <div className="max-w-7xl mx-auto w-full columns-2 lg:columns-3 xl:columns-4 gap-4">
         {styles.map((style, index) => (
           <DiscoveryCard
             key={style.id}

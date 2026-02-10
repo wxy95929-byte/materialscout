@@ -24,7 +24,7 @@ export function SearchHero({ onCameraClick }: SearchHeroProps) {
           >
             <Camera className="w-5 h-5 text-muted-foreground mr-3 flex-shrink-0" />
             <span className="flex-1 text-left text-muted-foreground text-base">
-              Tap here to upload a room photo...
+              Tap here to upload a photo of your room...
             </span>
           </button>
         </div>
