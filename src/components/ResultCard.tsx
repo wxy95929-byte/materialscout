@@ -1,5 +1,5 @@
 import React from "react";
-import { Compass } from "lucide-react";
+import { MapPin } from "lucide-react";
 
 interface ResultCardProps {
   id: string;
