@@ -99,6 +99,13 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Footer */}
+      <footer className="py-8 text-center">
+        <p className="text-sm text-muted-foreground">
+          © 2026 Material Scout. Designed by Xueying from MSIS program.
+        </p>
+      </footer>
+
       {/* FAB - Create New Project */}
       <button
         onClick={() => setIsModalOpen(true)}
