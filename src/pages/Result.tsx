@@ -61,7 +61,7 @@ const MOOD_BOARDS: Record<string, MoodBoard> = {
     items: [
       { id: "1", name: "Woven Rattan", reasoning: "Essential for that relaxed bohemian vibe.", imageUrl: "/images/woven-rattan.jpeg", pinUrl: "https://www.pinterest.com/search/pins/?q=Woven%20Rattan%20outdoor%20interior%20design%20style&rs=typed" },
       { id: "2", name: "Tropical Greenery", reasoning: "Blurring the lines between indoors and out.", imageUrl: "/images/tropical-greenery.jpeg", pinUrl: "https://www.pinterest.com/search/pins/?q=Tropical%20Greenery%20outdoor%20interior%20design%20style&rs=typed" },
-      { id: "3", name: "Macrame Textiles", reasoning: "Soft, handcrafted textures.", imageUrl: "https://images.unsplash.com/photo-1599695079450-937b83648eb1?auto=format&fit=crop&w=800&q=80" },
+      { id: "3", name: "Macrame Textiles", reasoning: "Soft, handcrafted textures.", imageUrl: "/images/macrame-textiles.jpeg", pinUrl: "https://www.pinterest.com/search/pins/?q=Macrame%20Textiles%20outdoor%20interior%20design%20style&rs=typed" },
     ],
   },
 };
