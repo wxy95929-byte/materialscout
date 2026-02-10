@@ -39,7 +39,7 @@ const TRENDING_STYLES = [
     id: "mid-century-bedroom",
     name: "Mid-Century Modern Bedroom",
     image:
-      "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=800&q=80",
+      "/images/mid-century-bedroom-hero.png",
     description: "Retro functionality with organic forms.",
   },
   {
