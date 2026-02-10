@@ -47,7 +47,7 @@ const TRENDING_STYLES = [
     name: "Bohemian Outdoor Sanctuary",
     // FIXED: Actual Patio image, NOT a kitchen
     image:
-      "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1599695079450-937b83648eb1?auto=format&fit=crop&w=800&q=80",
     description: "Eclectic, relaxed, and filled with plants and texture.",
   },
 ] as const;
