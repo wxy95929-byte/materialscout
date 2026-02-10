@@ -53,7 +53,7 @@ const MOOD_BOARDS: Record<string, MoodBoard> = {
     items: [
       { id: "1", name: "Walnut Wood", reasoning: "The classic mid-century material.", imageUrl: "/images/walnut-wood.jpeg", pinUrl: "https://www.pinterest.com/search/pins/?q=Walnut%20Wood%20bedroom%20interior%20design%20style&rs=typed" },
       { id: "2", name: "Mustard Velvet", reasoning: "Retro color pops for textiles.", imageUrl: "/images/mustard-velvet.jpeg", pinUrl: "https://www.pinterest.com/search/pins/?q=Mustard%20Velvet%20interior%20bedroom%20design%20style&rs=typed" },
-      { id: "3", name: "Geometric Rugs", reasoning: "Bold patterns to anchor the room.", imageUrl: "https://images.unsplash.com/photo-1575296500388-349f43a059d0?auto=format&fit=crop&w=800&q=80" },
+      { id: "3", name: "Geometric Rugs", reasoning: "Bold patterns to anchor the room.", imageUrl: "/images/geometric-rugs.jpeg", pinUrl: "https://www.pinterest.com/search/pins/?q=Geometric%20Rugs%20bedroom%20design%20style&rs=typed" },
     ],
   },
   "boho-patio": {
