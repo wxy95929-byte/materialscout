@@ -13,7 +13,7 @@ export function SearchHero({ onCameraClick }: SearchHeroProps) {
           Material Scout
         </h1>
         <p className="text-muted-foreground font-light mb-8 text-lg">
-          Turn Pinterest Dreams into Purchase Lists
+          From Inspiration to Reality: AI-Curated Designs for Your Space
         </p>
 
         {/* Search Bar */}
