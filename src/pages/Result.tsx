@@ -18,49 +18,49 @@ const MOOD_BOARDS: Record<string, MoodBoard> = {
   "modern-farmhouse-kitchen": {
     styleName: "Modern Farmhouse Kitchen",
     items: [
-      { id: "1", name: "White Shiplap Texture", reasoning: "The quintessential farmhouse backdrop foundation.", imageUrl: "https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?auto=format&fit=crop&w=800&q=80" },
-      { id: "2", name: "Matte Black Accents", reasoning: "Adds modern contrast to the rustic white palette.", imageUrl: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80" },
-      { id: "3", name: "Natural Wood Elements", reasoning: "Warmth that grounds the bright airy space.", imageUrl: "https://images.unsplash.com/photo-1606822350567-c290c008064d?auto=format&fit=crop&w=800&q=80" },
+      { id: "1", name: "White Shiplap Texture", reasoning: "The foundation of farmhouse style.", imageUrl: "https://images.unsplash.com/photo-1521783593447-5702b9bc7252?auto=format&fit=crop&w=800&q=80" },
+      { id: "2", name: "Matte Black Hardware", reasoning: "Modern contrast against white cabinets.", imageUrl: "https://images.unsplash.com/photo-1549429789-53e7f48b5947?auto=format&fit=crop&w=800&q=80" },
+      { id: "3", name: "Natural Oak Details", reasoning: "Brings warmth to the clean palette.", imageUrl: "https://images.unsplash.com/photo-1506898667547-42e22a46e127?auto=format&fit=crop&w=800&q=80" },
     ],
   },
   "japandi-bathroom": {
     styleName: "Japandi Bathroom Oasis",
     items: [
-      { id: "1", name: "Zen Stone Textures", reasoning: "Natural, matte finishes for tranquility.", imageUrl: "https://images.unsplash.com/photo-1513689222272-91e8466b0a9b?auto=format&fit=crop&w=800&q=80" },
-      { id: "2", name: "Bamboo Wood accents", reasoning: "Warmth and sustainability in design.", imageUrl: "https://images.unsplash.com/photo-1594269146507-68b6b15d2a65?auto=format&fit=crop&w=800&q=80" },
-      { id: "3", name: "Soft Beige Linen", reasoning: "Softness without visual clutter.", imageUrl: "https://images.unsplash.com/photo-1579762593175-20226054f195?auto=format&fit=crop&w=800&q=80" },
+      { id: "1", name: "Stone Textures", reasoning: "Natural elements for a zen spa feel.", imageUrl: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=800&q=80" },
+      { id: "2", name: "Warm Bamboo", reasoning: "Sustainable wood accents.", imageUrl: "https://images.unsplash.com/photo-1533090368676-1fd25485db88?auto=format&fit=crop&w=800&q=80" },
+      { id: "3", name: "Minimalist Ceramics", reasoning: "Clean lines and function.", imageUrl: "https://images.unsplash.com/photo-1581539250439-c96689b516dd?auto=format&fit=crop&w=800&q=80" },
     ],
   },
   "industrial-loft-living": {
     styleName: "Industrial Loft Living",
     items: [
-      { id: "1", name: "Exposed Brick Texture", reasoning: "The hallmark of authentic industrial loft design.", imageUrl: "https://images.unsplash.com/photo-1579969561005-2b0235e4e758?auto=format&fit=crop&w=800&q=80" },
-      { id: "2", name: "Distressed Leather", reasoning: "Adds character and history to the seating.", imageUrl: "https://images.unsplash.com/photo-1506459225024-1428097a7e18?auto=format&fit=crop&w=800&q=80" },
-      { id: "3", name: "Raw Concrete Finish", reasoning: "Cool, architectural tones for surfaces.", imageUrl: "https://images.unsplash.com/photo-1517646331032-9e8563c520a1?auto=format&fit=crop&w=800&q=80" },
+      { id: "1", name: "Exposed Brick", reasoning: "The signature of industrial lofts.", imageUrl: "https://images.unsplash.com/photo-1508343940183-b6e51240f28a?auto=format&fit=crop&w=800&q=80" },
+      { id: "2", name: "Distressed Leather", reasoning: "Timeless and durable seating material.", imageUrl: "https://images.unsplash.com/photo-1544075191-447087654a9c?auto=format&fit=crop&w=800&q=80" },
+      { id: "3", name: "Concrete Surfaces", reasoning: "Cool grey tones for a modern edge.", imageUrl: "https://images.unsplash.com/photo-1516644243610-858348633324?auto=format&fit=crop&w=800&q=80" },
     ],
   },
   "coastal-dining-room": {
     styleName: "Coastal Chic Dining",
     items: [
-      { id: "1", name: "Weathered Driftwood", reasoning: "Sun-bleached wood tones from the shore.", imageUrl: "https://images.unsplash.com/photo-1516886635546-2495d4d3140e?auto=format&fit=crop&w=800&q=80" },
-      { id: "2", name: "Ocean Blue Glass", reasoning: "Reflects the colors of the sea.", imageUrl: "https://images.unsplash.com/photo-1505152843812-748722b9b216?auto=format&fit=crop&w=800&q=80" },
-      { id: "3", name: "Natural Jute Fiber", reasoning: "Sand-like texture for rugs and mats.", imageUrl: "https://images.unsplash.com/photo-1528459384483-3563964d363d?auto=format&fit=crop&w=800&q=80" },
+      { id: "1", name: "Driftwood Finishes", reasoning: "Weathered wood evokes the beach.", imageUrl: "https://images.unsplash.com/photo-1519757045388-6c4b2663994c?auto=format&fit=crop&w=800&q=80" },
+      { id: "2", name: "Sea Glass Blue", reasoning: "A pop of color from the ocean.", imageUrl: "https://images.unsplash.com/photo-1502672023488-70e25813eb80?auto=format&fit=crop&w=800&q=80" },
+      { id: "3", name: "Sandy Beige Linen", reasoning: "Neutral backdrop like the shore.", imageUrl: "https://images.unsplash.com/photo-1579762593175-20226054f195?auto=format&fit=crop&w=800&q=80" },
     ],
   },
   "mid-century-bedroom": {
     styleName: "Mid-Century Modern Bedroom",
     items: [
-      { id: "1", name: "Rich Walnut Wood", reasoning: "The definitive wood tone of the era.", imageUrl: "https://images.unsplash.com/photo-1610360348702-86937c569a30?auto=format&fit=crop&w=800&q=80" },
-      { id: "2", name: "Geometric Patterns", reasoning: "Bold, retro shapes for textiles.", imageUrl: "https://images.unsplash.com/photo-1580196920985-3391d64c232f?auto=format&fit=crop&w=800&q=80" },
-      { id: "3", name: "Brass Finishes", reasoning: "Sophisticated metallic accents.", imageUrl: "https://images.unsplash.com/photo-1507473888900-52e1ad14592a?auto=format&fit=crop&w=800&q=80" },
+      { id: "1", name: "Walnut Wood", reasoning: "The classic mid-century material.", imageUrl: "https://images.unsplash.com/photo-1610360348702-86937c569a30?auto=format&fit=crop&w=800&q=80" },
+      { id: "2", name: "Mustard Velvet", reasoning: "Retro color pops for textiles.", imageUrl: "https://images.unsplash.com/photo-1598532163257-52d880cb18a2?auto=format&fit=crop&w=800&q=80" },
+      { id: "3", name: "Geometric Rugs", reasoning: "Bold patterns to anchor the room.", imageUrl: "https://images.unsplash.com/photo-1575296500388-349f43a059d0?auto=format&fit=crop&w=800&q=80" },
     ],
   },
   "boho-patio": {
     styleName: "Bohemian Outdoor Sanctuary",
     items: [
-      { id: "1", name: "Rattan & Wicker", reasoning: "Organic woven textures for relaxed lounging.", imageUrl: "https://images.unsplash.com/photo-1616627561950-9f746e33018e?auto=format&fit=crop&w=800&q=80" },
-      { id: "2", name: "Macrame Details", reasoning: "Handcrafted textiles add bohemian spirit.", imageUrl: "https://images.unsplash.com/photo-1520023718919-613d9657b93a?auto=format&fit=crop&w=800&q=80" },
-      { id: "3", name: "Lush Potted Greenery", reasoning: "Blurring the line between indoors and nature.", imageUrl: "https://images.unsplash.com/photo-1459156212016-c812468e2115?auto=format&fit=crop&w=800&q=80" },
+      { id: "1", name: "Woven Rattan", reasoning: "Essential for that relaxed bohemian vibe.", imageUrl: "https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=800&q=80" },
+      { id: "2", name: "Tropical Greenery", reasoning: "Blurring the lines between indoors and out.", imageUrl: "https://images.unsplash.com/photo-1459156212016-c812468e2115?auto=format&fit=crop&w=800&q=80" },
+      { id: "3", name: "Macrame Textiles", reasoning: "Soft, handcrafted textures.", imageUrl: "https://images.unsplash.com/photo-1599695079450-937b83648eb1?auto=format&fit=crop&w=800&q=80" },
     ],
   },
 };
