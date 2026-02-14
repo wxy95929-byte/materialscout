@@ -1,5 +1,5 @@
 import React from "react";
-import { MapPin } from "lucide-react";
+import { MapPin, ShoppingBag } from "lucide-react";
 
 interface ResultCardProps {
   id: string;
@@ -7,6 +7,7 @@ interface ResultCardProps {
   reasoning: string;
   imageUrl: string;
   pinUrl?: string;
+  isTrendingMode?: boolean;
 }
 
 export const ResultCard = ({
@@ -14,10 +15,13 @@ export const ResultCard = ({
   reasoning,
   imageUrl,
   pinUrl,
+  isTrendingMode = true,
 }: ResultCardProps) => {
-  const exploreUrl = pinUrl || `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(
+  const pinterestUrl = pinUrl || `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(
     `${name || "interior design"} interior design style`
   )}`;
+
+  const shoppingUrl = `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(name || "interior design")}`;
 
   return (
     <div className="group flex flex-col bg-card rounded-2xl overflow-hidden shadow-sm border border-border hover:shadow-lg transition-all duration-300">
@@ -44,15 +48,27 @@ export const ResultCard = ({
           {reasoning || "A curated mood to inspire your next space."}
         </p>
 
-        <a
-          href={exploreUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#E60023] text-white text-sm font-medium rounded-xl hover:bg-[#ad081b] transition-colors no-underline"
-        >
-          <MapPin className="w-4 h-4" />
-          <span>Pin Inspiration</span>
-        </a>
+        {isTrendingMode ? (
+          <a
+            href={pinterestUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#E60023] text-white text-sm font-medium rounded-xl hover:bg-[#ad081b] transition-colors no-underline"
+          >
+            <MapPin className="w-4 h-4" />
+            <span>Pin Inspiration</span>
+          </a>
+        ) : (
+          <a
+            href={shoppingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-foreground text-background text-sm font-medium rounded-xl hover:bg-foreground/90 transition-colors no-underline"
+          >
+            <ShoppingBag className="w-4 h-4" />
+            <span>Shop Similar</span>
+          </a>
+        )}
       </div>
     </div>
   );
