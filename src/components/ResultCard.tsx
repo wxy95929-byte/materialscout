@@ -10,6 +10,8 @@ interface ResultCardProps {
   isTrendingMode?: boolean;
 }
 
+const BRANDS = ["West Elm", "Crate & Barrel", "CB2", "Pottery Barn", "Anthropologie", "Rejuvenation", "IKEA", "Target"];
+
 export const ResultCard = ({
   name,
   reasoning,
@@ -17,15 +19,20 @@ export const ResultCard = ({
   pinUrl,
   isTrendingMode = true,
 }: ResultCardProps) => {
+  const isBrandedProduct = BRANDS.some(brand =>
+    name.toLowerCase().includes(brand.toLowerCase()) ||
+    reasoning.toLowerCase().includes(brand.toLowerCase())
+  );
+
+  const showShopButton = isBrandedProduct || !isTrendingMode;
+
+  const shoppingUrl = `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(name || "interior design")}`;
   const pinterestUrl = pinUrl || `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(
     `${name || "interior design"} interior design style`
   )}`;
 
-  const shoppingUrl = `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(name || "interior design")}`;
-
   return (
     <div className="group flex flex-col bg-card rounded-2xl overflow-hidden shadow-sm border border-border hover:shadow-lg transition-all duration-300">
-      {/* Full-bleed Image */}
       <div className="relative w-full overflow-hidden">
         <img
           src={imageUrl}
@@ -38,7 +45,6 @@ export const ResultCard = ({
         />
       </div>
 
-      {/* Caption */}
       <div className="flex flex-col p-4">
         <h3 className="font-serif text-lg font-medium text-foreground leading-snug line-clamp-2 mb-1.5">
           {name || "Design Inspiration"}
@@ -48,17 +54,7 @@ export const ResultCard = ({
           {reasoning || "A curated mood to inspire your next space."}
         </p>
 
-        {isTrendingMode ? (
-          <a
-            href={pinterestUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#E60023] text-white text-sm font-medium rounded-xl hover:bg-[#ad081b] transition-colors no-underline"
-          >
-            <MapPin className="w-4 h-4" />
-            <span>Pin Inspiration</span>
-          </a>
-        ) : (
+        {showShopButton ? (
           <a
             href={shoppingUrl}
             target="_blank"
@@ -67,6 +63,16 @@ export const ResultCard = ({
           >
             <ShoppingBag className="w-4 h-4" />
             <span>Shop Similar</span>
+          </a>
+        ) : (
+          <a
+            href={pinterestUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#E60023] text-white text-sm font-medium rounded-xl hover:bg-[#ad081b] transition-colors no-underline"
+          >
+            <MapPin className="w-4 h-4" />
+            <span>Pin Inspiration</span>
           </a>
         )}
       </div>
