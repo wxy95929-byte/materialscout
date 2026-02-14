@@ -61,21 +61,29 @@ export const ResultCard = ({
         </p>
 
         {showShopButton ? (
-          <button
-            onClick={(e) => handleButtonClick(e, shoppingUrl)}
-            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-foreground text-background text-sm font-medium rounded-xl hover:bg-foreground/90 transition-colors cursor-pointer border-none"
+          <a
+            href={shoppingUrl}
+            target="_blank"
+            rel="noreferrer"
+            referrerPolicy="no-referrer"
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-foreground text-background text-sm font-medium rounded-xl hover:bg-foreground/90 transition-colors cursor-pointer no-underline"
           >
             <ShoppingBag className="w-4 h-4" />
             <span>Shop Similar</span>
-          </button>
+          </a>
         ) : (
-          <button
-            onClick={(e) => handleButtonClick(e, pinterestUrl)}
-            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#E60023] text-white text-sm font-medium rounded-xl hover:bg-[#ad081b] transition-colors cursor-pointer border-none"
+          <a
+            href={pinterestUrl}
+            target="_blank"
+            rel="noreferrer"
+            referrerPolicy="no-referrer"
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#E60023] text-white text-sm font-medium rounded-xl hover:bg-[#ad081b] transition-colors cursor-pointer no-underline"
           >
             <MapPin className="w-4 h-4" />
             <span>Pin Inspiration</span>
-          </button>
+          </a>
         )}
       </div>
     </div>
