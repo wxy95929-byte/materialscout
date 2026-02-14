@@ -31,6 +31,12 @@ export const ResultCard = ({
     `${name || "interior design"} interior design style`
   )}`;
 
+  const handleButtonClick = (e: React.MouseEvent, url: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <div className="group flex flex-col bg-card rounded-2xl overflow-hidden shadow-sm border border-border hover:shadow-lg transition-all duration-300">
       <div className="relative w-full overflow-hidden">
@@ -55,27 +61,21 @@ export const ResultCard = ({
         </p>
 
         {showShopButton ? (
-          <a
-            href={shoppingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(shoppingUrl, '_blank', 'noopener,noreferrer'); }}
-            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-foreground text-background text-sm font-medium rounded-xl hover:bg-foreground/90 transition-colors no-underline cursor-pointer"
+          <button
+            onClick={(e) => handleButtonClick(e, shoppingUrl)}
+            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-foreground text-background text-sm font-medium rounded-xl hover:bg-foreground/90 transition-colors cursor-pointer border-none"
           >
             <ShoppingBag className="w-4 h-4" />
             <span>Shop Similar</span>
-          </a>
+          </button>
         ) : (
-          <a
-            href={pinterestUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(pinterestUrl, '_blank', 'noopener,noreferrer'); }}
-            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#E60023] text-white text-sm font-medium rounded-xl hover:bg-[#ad081b] transition-colors no-underline cursor-pointer"
+          <button
+            onClick={(e) => handleButtonClick(e, pinterestUrl)}
+            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#E60023] text-white text-sm font-medium rounded-xl hover:bg-[#ad081b] transition-colors cursor-pointer border-none"
           >
             <MapPin className="w-4 h-4" />
             <span>Pin Inspiration</span>
-          </a>
+          </button>
         )}
       </div>
     </div>
