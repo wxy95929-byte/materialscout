@@ -86,6 +86,7 @@ export default function Result() {
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const isDemo = searchParams.get("demo") === "true";
+  const isTrendingMode = isDemo;
   const styleId = searchParams.get("style") || "";
 
   const displayImage =
@@ -172,6 +173,7 @@ export default function Result() {
                   reasoning={item.reasoning}
                   imageUrl={item.imageUrl}
                   pinUrl={item.pinUrl}
+                  isTrendingMode={isTrendingMode}
                 />
               ))}
             </div>
