@@ -59,7 +59,8 @@ export const ResultCard = ({
             href={shoppingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-foreground text-background text-sm font-medium rounded-xl hover:bg-foreground/90 transition-colors no-underline"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(shoppingUrl, '_blank', 'noopener,noreferrer'); }}
+            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-foreground text-background text-sm font-medium rounded-xl hover:bg-foreground/90 transition-colors no-underline cursor-pointer"
           >
             <ShoppingBag className="w-4 h-4" />
             <span>Shop Similar</span>
@@ -69,7 +70,8 @@ export const ResultCard = ({
             href={pinterestUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#E60023] text-white text-sm font-medium rounded-xl hover:bg-[#ad081b] transition-colors no-underline"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(pinterestUrl, '_blank', 'noopener,noreferrer'); }}
+            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[#E60023] text-white text-sm font-medium rounded-xl hover:bg-[#ad081b] transition-colors no-underline cursor-pointer"
           >
             <MapPin className="w-4 h-4" />
             <span>Pin Inspiration</span>
