@@ -104,37 +104,28 @@ serve(async (req) => {
     // ========================================
     console.log("Step 1: Analyzing image with Gemini...");
 
-    const geminiPrompt = `Analyze this room image. Identify the 3 most prominent furniture items or decor pieces that users would want to purchase.
-
-USER BUDGET: ${budget.toUpperCase()}
-- If ECONOMY: Target affordable options from brands like ${selectedBudget.brands}. Use terms like "affordable", "budget", "value" in queries.
-- If STANDARD: Target mid-range options from brands like ${selectedBudget.brands}.
-- If LUXURY: Target high-end designer options from brands like ${selectedBudget.brands}. Use terms like "designer", "luxury", "premium" in queries.
-
-CRITICAL: Generate LONG-TAIL VISUAL QUERIES with specific details:
-- Do NOT just say "Sofa" or "Lamp"
-- You MUST include the exact COLOR, MATERIAL, and SHAPE visible in the image
-- IMPORTANT: Add budget-appropriate brand names or price-tier keywords to each query
-- Example for ECONOMY: "affordable curved white fabric sofa IKEA style"
-- Example for LUXURY: "designer curved white boucle sofa luxury"
+    const geminiPrompt = `Analyze this room image. Identify the 3 most prominent furniture items or decor pieces.
 
 For each item, provide:
-1. item_name: A short descriptive name with the primary color (e.g., "White Curved Sofa", "Oak Coffee Table")
-2. shopping_query: A HIGHLY SPECIFIC Google Shopping query with COLOR + MATERIAL + SHAPE + BUDGET KEYWORDS (e.g., "affordable curved white fabric sofa" for economy, "luxury designer curved white boucle sofa" for luxury)
-3. reasoning: Why this item stands out and would be desirable
+1. item_name: Short name with color (e.g., "White Curved Sofa")
+2. shopping_query: A SHORT 3-5 word Google Shopping query. Keep it simple and generic enough to find results. Examples: "white boucle sofa", "oak coffee table", "brass floor lamp", "velvet accent chair"
+3. reasoning: Why this item stands out
 
-Return ONLY a raw JSON array. Do not use Markdown formatting or code blocks.
+CRITICAL RULES FOR shopping_query:
+- Maximum 5 words
+- Do NOT include brand names
+- Do NOT include words like "standard", "budget", "luxury", "style"
+- Focus on: material + color + item type
+- Good: "beige upholstered platform bed"
+- Bad: "Standard off-white boucle fabric curved upholstered bed frame West Elm style"
 
-Example format:
+Return ONLY a raw JSON array, no markdown or code blocks.
+
+Example:
 [
-  {
-    "item_name": "White Curved Sofa",
-    "shopping_query": "curved white boucle fabric sofa ${selectedBudget.keywords}",
-    "reasoning": "The organic curved shape and textured white boucle fabric creates a stunning focal point"
-  }
-]
-
-Return ONLY the JSON array, nothing else.`;
+  {"item_name": "White Curved Sofa", "shopping_query": "white boucle curved sofa", "reasoning": "Stunning focal point"},
+  {"item_name": "Oak Coffee Table", "shopping_query": "round oak coffee table", "reasoning": "Warm natural wood accent"}
+]`;
 
     const geminiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -213,58 +204,46 @@ Return ONLY the JSON array, nothing else.`;
 
     const productResults: ProductResult[] = [];
 
+    const searchSerper = async (query: string): Promise<SerperShoppingResult | null> => {
+      const serperBody: Record<string, string> = { q: query, gl: "us", hl: "en" };
+      if (selectedBudget.priceSort) serperBody.tbs = selectedBudget.priceSort;
+
+      const resp = await fetch("https://google.serper.dev/shopping", {
+        method: "POST",
+        headers: { "X-API-KEY": SERPER_API_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify(serperBody),
+      });
+      if (!resp.ok) return null;
+      const data: SerperResponse = await resp.json();
+      return data.shopping?.[0] || null;
+    };
+
     for (const item of geminiItems) {
       try {
-        // Append budget keywords to the search query
-        const budgetEnhancedQuery = selectedBudget.keywords
-          ? `${item.shopping_query} ${selectedBudget.keywords}`
-          : item.shopping_query;
-        
-        console.log(`Searching for: "${budgetEnhancedQuery}" (Budget: ${budget})`);
+        // Try original query first
+        console.log(`Searching for: "${item.shopping_query}" (Budget: ${budget})`);
+        let result = await searchSerper(item.shopping_query);
 
-        // Build Serper request with optional price sorting
-        const serperBody: Record<string, string> = {
-          q: budgetEnhancedQuery,
-          gl: "us",
-          hl: "en",
-        };
-
-        // Add price sorting parameter if available
-        if (selectedBudget.priceSort) {
-          serperBody.tbs = selectedBudget.priceSort;
+        // Fallback: simplify to just the item_name if no results
+        if (!result) {
+          const fallbackQuery = item.item_name;
+          console.log(`  ✗ No results. Retrying with fallback: "${fallbackQuery}"`);
+          result = await searchSerper(fallbackQuery);
         }
 
-        const serperResponse = await fetch("https://google.serper.dev/shopping", {
-          method: "POST",
-          headers: {
-            "X-API-KEY": SERPER_API_KEY,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(serperBody),
-        });
-
-        if (!serperResponse.ok) {
-          console.error(`Serper search failed for "${item.item_name}":`, serperResponse.status);
-          continue;
-        }
-
-        const serperData: SerperResponse = await serperResponse.json();
-        const firstResult = serperData.shopping?.[0];
-
-        if (firstResult) {
-          console.log(`  ✓ Found: ${firstResult.title} - ${firstResult.price} from ${firstResult.source}`);
-          
+        if (result) {
+          console.log(`  ✓ Found: ${result.title} - ${result.price} from ${result.source}`);
           productResults.push({
             item_name: item.item_name,
             reasoning: item.reasoning,
-            product_title: firstResult.title,
-            product_url: firstResult.link,
-            product_image: firstResult.imageUrl,
-            product_source: firstResult.source,
-            estimated_price: firstResult.price || "Check price",
+            product_title: result.title,
+            product_url: result.link,
+            product_image: result.imageUrl,
+            product_source: result.source,
+            estimated_price: result.price || "Check price",
           });
         } else {
-          console.log(`  ✗ No shopping results for "${item.shopping_query}"`);
+          console.log(`  ✗ No results even with fallback for "${item.item_name}"`);
         }
       } catch (itemError) {
         console.error(`Error processing "${item.item_name}":`, itemError);
